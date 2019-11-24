@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Player : MonoBehaviour
 {
     //Events
-    public delegate void Activate(Card.Target target, Team _OwningTeam);
+    public delegate void Activate(Card.Target target, float damage);
     public event Activate OnActivate;
 
     public delegate void PlayerEmpty();
@@ -37,12 +37,13 @@ public class Player : MonoBehaviour
         if (_stamina <= 0) OnPlayerStaminaEmpty.Invoke();
     }
 
-    private void OnCardChosen(Card.Target target, float damage)
+    private void OnCardChosen(Card.CardData cardData)
     {
         foreach (Card card in _cards)
         {
             card.SetRegisteringInput(false);
         }
+        OnActivate.Invoke(cardData);
     }
 
     public void OnTurnEnd()

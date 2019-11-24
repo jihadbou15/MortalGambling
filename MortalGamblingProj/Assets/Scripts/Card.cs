@@ -10,7 +10,8 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     public enum Type
     {
         Melee,
-        Magic
+        Magic,
+        Item
     }
     public enum Target
     {
@@ -20,14 +21,20 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     }
 
     //Variables
-    [SerializeField] private Type _type;
-    [SerializeField] private Target _target;
-    [SerializeField] private float _baseDamage;
+    [System.Serializable]
+    public struct CardData
+    {
+        private Type _type;
+        private Target _target;
+        private float _baseDamage;
+    }
+
+    [SerializeField] private CardData _cardData;
     private Image _image;
     private bool _registeringInput;
 
     //Events
-    public delegate void Activate(Target target, float damage);
+    public delegate void Activate(CardData cardData);
     public event Activate OnActivate;
 
     public void Initialized()
@@ -42,7 +49,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if(_registeringInput) OnActivate.Invoke(_target, _baseDamage);
+        if(_registeringInput) OnActivate.Invoke(_cardData);
     }
 
     public void OnPointerEnter(PointerEventData eventData)

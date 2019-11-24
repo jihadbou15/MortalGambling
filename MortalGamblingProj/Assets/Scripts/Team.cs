@@ -8,6 +8,7 @@ public class Team : MonoBehaviour
     public event TeamCardHandler OnCardActivate;
 
     private int _id = -1;
+    private List<Player> _players;
 
     public void Initialize(int id)
     {
