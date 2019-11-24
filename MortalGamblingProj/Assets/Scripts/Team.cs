@@ -11,15 +11,16 @@ public class Team : MonoBehaviour
     private List<Player> _players;
     private int _playerAmount = 1;
 
-    public void Initialize(int id, Player prefab)
+    public void Initialize(int id, Player prefab, Card cardPrefab, Vector3 PlayerPosition)
     {
         _id = id;
         for (int i = 0; i < _playerAmount; i++)
         {
             Player newPlayer = GameObject.Instantiate(prefab);
-            newPlayer.Initialize(i);
+            newPlayer.Initialize(i, cardPrefab);
             newPlayer.OnActivate += DoCardActivate;
             _players.Add(newPlayer);
+            newPlayer.transform.SetParent(gameObject.transform);
         }        
     }
 

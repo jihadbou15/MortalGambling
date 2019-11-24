@@ -14,21 +14,29 @@ public class Player : MonoBehaviour
     public event PlayerEmpty OnPlayerStaminaEmpty;
 
     //Variables
-    [SerializeField] private float _health;
+    private float _health;
     [SerializeField] private float _maxHealth;
-    [SerializeField] private float _stamina;
+    private float _stamina;
     [SerializeField] private float _maxStamina;
-    [SerializeField] private List<Card> _cards;
+    private List<Card> _cards;
+    [SerializeField] private int _cardAmount = 3;
     [SerializeField] private Slider _UIHealth;
     [SerializeField] private Slider _UIStamina;
+    [SerializeField] private Transform _CardPosition;
+
 
     private int _index = -1;
 
-    public void Initialize(int index)
+    public void Initialize(int index, Card prefab)
     {
-        foreach(Card card in _cards) 
+        for(int i = 0; i < _cardAmount -1; i++)
         {
-            card.OnActivate += OnCardChosen;
+            Card newCard = GameObject.Instantiate(prefab);
+            newCard.Initialize(Card.Type.Melee, (Card.Target)i - 1, (1.5f - (.5f * i)) * 20.0f);
+            newCard.OnActivate += OnCardChosen;
+            newCard.transform.SetPositionAndRotation(new Vector3(-50.0f + (50.0f * i), 0, 0),newCard.transform.rotation);
+            _cards.Add(newCard);
+            newCard.transform.SetParent(gameObject.transform);
         }
         Reset();
         _index = index;

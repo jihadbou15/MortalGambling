@@ -37,7 +37,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     public delegate void Activate(CardData cardData);
     public event Activate OnActivate;
 
-    public void Initialized(
+    public void Initialize(
         Type type,
         Target target,
         float baseDamage)
