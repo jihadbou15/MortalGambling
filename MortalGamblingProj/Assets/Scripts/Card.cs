@@ -23,10 +23,11 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     [SerializeField] private Type _type;
     [SerializeField] private Target _target;
     private Image _image;
+    private bool _registeringInput;
 
     //Events
     public delegate void Activate(Target target);
-    public event Activate onActivate;
+    public event Activate OnActivate;
 
     void Initialized()
     {
@@ -40,16 +41,22 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        onActivate.Invoke(_target);
+        if(_registeringInput) OnActivate.Invoke(_target);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        _image.color = Color.blue;
+        if (_registeringInput) _image.color = Color.blue;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        _image.color = Color.clear;
+        if (_registeringInput) _image.color = Color.clear;
+    }
+
+    public void SetRegisteringInput(bool isRegisteringInput)
+    {
+        _registeringInput = isRegisteringInput;
+        _image.color = Color.red;
     }
 }
