@@ -21,6 +21,9 @@ public class TeamManager : MonoBehaviour
     public delegate void TeamManagerCardHandler(List<TeamChoiceData> teamChoices);
     public event TeamManagerCardHandler OnCardActivate;
 
+    public delegate void TeamManagerStaminaEmpty(int teamIdx);
+    public event TeamManagerStaminaEmpty OnStaminaEmpty;
+
     [SerializeField] private int _teamAmount = 0;
     [SerializeField] private Player _playerPrefab = null;
     [SerializeField] private Card _cardPrefab = null;
@@ -36,6 +39,7 @@ public class TeamManager : MonoBehaviour
             Team newTeam = new Team();
             newTeam.Initialize(i, _playerPrefab, _cardPrefab, _teamPositions[i]);
             newTeam.OnCardActivate += DoCardActivate;
+            newTeam.OnTeamPlayerStaminaEmpty += DoTeamPlayerStaminaEmpty;
             _teams.Add(newTeam);
         }
     }
@@ -69,9 +73,13 @@ public class TeamManager : MonoBehaviour
         _teams[teamIdx].ApplyHealthChange(staminaChange, playerIdx);
     }
 
+    public void DoTeamPlayerStaminaEmpty(int id)
+    {
+        OnStaminaEmpty?.Invoke(id);
+    }
+
     private void DoCardActivate(Card.CardData target, int id, int playerId)
     {
         _teamChoices.Add(new TeamChoiceData( target, id, playerId));
     }
-
 }

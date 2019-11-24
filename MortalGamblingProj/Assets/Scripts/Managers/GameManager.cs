@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
 
         _teamManager.Initialize();
         _teamManager.OnCardActivate += DoCardActivate;
+        _teamManager.OnStaminaEmpty += DoStaminaEmpty;
 
         _phaseManager.Initialize(_teamManager.GetTeamAmount());
         _phaseManager.OnPhaseEnd += DoPhaseEnd;
@@ -67,5 +68,13 @@ public class GameManager : MonoBehaviour
     private void DoCardActivate(List<TeamManager.TeamChoiceData> readyTeams)
     {
         _turnManager.ResolveTeams(readyTeams, _phaseManager.GetAttackingTeamIdx());
+    }
+
+    private void DoStaminaEmpty(int teamId)
+    {
+        if(_phaseManager.GetAttackingTeamIdx() == teamId)
+        {
+            _phaseManager.SwapPhase();
+        }
     }
 }
