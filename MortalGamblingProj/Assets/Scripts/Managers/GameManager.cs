@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         _inputManager.Initialize();
+        _inputManager.KeyDown += OnKeyDown;
+
         _phaseManager.Initialize();
         _turnManager.Initialize();
         _teamManager.Initialize();
@@ -23,5 +25,10 @@ public class GameManager : MonoBehaviour
         _phaseManager.Tick();
         _turnManager.Tick();
         _teamManager.Tick();
+    }
+
+    private void OnKeyDown(KeyCode keyCode)
+    {
+        //Check for input here
     }
 }
