@@ -7,6 +7,11 @@ public class Team : MonoBehaviour
     public delegate void TeamCardHandler(Card.CardData cardData, int id, int playerId);
     public event TeamCardHandler OnCardActivate;
 
+    public delegate void TeamPlayerEmpty(int teamId);
+    public event TeamPlayerEmpty OnTeamPlayerHealthEmpty;
+    public event TeamPlayerEmpty OnTeamPlayerStaminaEmpty;
+
+
     private int _id = -1;
     private List<Player> _players;
     private int _playerAmount = 1;
@@ -19,6 +24,7 @@ public class Team : MonoBehaviour
             Player newPlayer = GameObject.Instantiate(prefab);
             newPlayer.Initialize(i, cardPrefab);
             newPlayer.OnActivate += DoCardActivate;
+            newPlayer.OnPlayerHealthEmpty += OnPlayerHealthEmpty;
             _players.Add(newPlayer);
             newPlayer.transform.SetParent(gameObject.transform);
         }        
@@ -37,6 +43,16 @@ public class Team : MonoBehaviour
     public void ApplyStaminaChange(float staminaChange, int playerIdx)
     {
         _players[playerIdx].OnStaminaChange(staminaChange);
+    }
+
+    public void OnPlayerHealthEmpty()
+    {
+        OnTeamPlayerHealthEmpty.Invoke(_id);
+    }
+
+    public void OnPlayerStaminaEmpty()
+    {
+        OnTeamPlayerStaminaEmpty.Invoke(_id);
     }
 
     private void DoCardActivate(Card.CardData cardData, int playerId)
