@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PhaseManager : MonoBehaviour
 {
+    public delegate void PhaseHandler();
+    public event PhaseHandler OnPhaseEnd;
+
     public void Initialize()
     {
 
@@ -13,4 +16,6 @@ public class PhaseManager : MonoBehaviour
     {
 
     }
+
+
 }
