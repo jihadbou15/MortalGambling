@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class TeamManager : MonoBehaviour
 {
-    public delegate void TeamManagerCardHandler(Dictionary<Card.Target, int>);
+    public delegate void TeamManagerCardHandler(List<KeyValuePair<Card.Target, int>> teamChoices);
     public event TeamManagerCardHandler OnCardActivate;
 
     [SerializeField] private int _teamAmount = 0;
     private List<Team> _teams = new List<Team>();
 
-    private Dictionary<Card.Target, int> _readyTeams = new Dictionary<Card.Target, int>();
+    private List<KeyValuePair<Card.Target, int>> _teamChoices = new List<KeyValuePair<Card.Target, int>>();
 
     public void Initialize()
     {
@@ -25,15 +25,25 @@ public class TeamManager : MonoBehaviour
 
     public void Tick()
     {
-        if(_readyTeams.Count >= _teamAmount)
+        foreach(Team team in _teams)
         {
-            OnCardActivate?.Invoke(_readyTeams);
-            _readyTeams.Clear();
+            team.Tick();
         }
+
+        if(_teamChoices.Count >= _teamAmount)
+        {
+            OnCardActivate?.Invoke(_teamChoices);
+            _teamChoices.Clear();
+        }
+    }
+
+    public int GetTeamAmount()
+    {
+        return _teamAmount;
     }
 
     private void DoCardActivate(Card.Target target, int id)
     {
-        _readyTeams.Add(target, id);
+        _teamChoices.Add(new KeyValuePair<Card.Target, int>( target, id));
     }
 }
