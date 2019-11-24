@@ -9,6 +9,10 @@ public class Player : MonoBehaviour
     public delegate void Activate(Card.Target target, Team _OwningTeam);
     public event Activate OnActivate;
 
+    public delegate void PlayerEmpty();
+    public event PlayerEmpty OnPlayerHealthEmpty;
+    public event PlayerEmpty OnPlayerStaminaEmpty;
+
     //Variables
     [SerializeField] private float _health;
     [SerializeField] private float _maxHealth;
@@ -18,7 +22,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Slider _UIHealth;
     [SerializeField] private Slider _UIStamina;
 
-    private void Initialize()
+    public void Initialize()
     {
         foreach(Card card in _cards) 
         {
@@ -27,6 +31,11 @@ public class Player : MonoBehaviour
         Reset();
     }
 
+    public void Tick()
+    {
+        if(_health <= 0) OnPlayerHealthEmpty.Invoke();
+        if (_stamina <= 0) OnPlayerStaminaEmpty.Invoke();
+    }
 
     private void OnCardChosen(Card.Target target, float damage)
     {
@@ -44,15 +53,15 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void OnHealthLost(float healthLost)
+    public void OnHealthChange(float healthChange)
     {
-        _health -= healthLost;
+        _health += healthChange;
         _UIHealth.value = _health / _maxHealth;
     }
 
-    public void OnStaminaLost(float staminaLost)
+    public void OnStaminaChange(float staminaChange)
     {
-        _stamina -= staminaLost;
+        _stamina += staminaChange;
         _UIStamina.value = _stamina / _maxStamina;
     }
 
