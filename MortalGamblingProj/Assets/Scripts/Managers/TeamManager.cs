@@ -23,6 +23,8 @@ public class TeamManager : MonoBehaviour
 
     [SerializeField] private int _teamAmount = 0;
     [SerializeField] private Player _playerPrefab = null;
+    [SerializeField] private Card _cardPrefab = null;
+    [SerializeField] private List<Vector3> _teamPositions = new List<Vector3>();
     private List<Team> _teams = new List<Team>();
 
     private List<TeamChoiceData> _teamChoices = new List<TeamChoiceData>();
@@ -32,7 +34,7 @@ public class TeamManager : MonoBehaviour
         for(int i = 0; i < _teamAmount; ++i)
         {
             Team newTeam = new Team();
-            newTeam.Initialize(i, _playerPrefab);
+            newTeam.Initialize(i, _playerPrefab, _cardPrefab, _teamPositions[i]);
             newTeam.OnCardActivate += DoCardActivate;
             _teams.Add(newTeam);
         }
