@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Player : MonoBehaviour
 {
     //Events
-    public delegate void Activate(Card.CardData cardData);
+    public delegate void Activate(Card.CardData cardData, int index);
     public event Activate OnActivate;
 
     public delegate void PlayerEmpty();
@@ -22,13 +22,16 @@ public class Player : MonoBehaviour
     [SerializeField] private Slider _UIHealth;
     [SerializeField] private Slider _UIStamina;
 
-    public void Initialize()
+    private int _index = -1;
+
+    public void Initialize(int index)
     {
         foreach(Card card in _cards) 
         {
             card.OnActivate += OnCardChosen;
         }
         Reset();
+        _index = index;
     }
 
     public void Tick()
@@ -43,7 +46,7 @@ public class Player : MonoBehaviour
         {
             card.SetRegisteringInput(false);
         }
-        OnActivate.Invoke(cardData);
+        OnActivate.Invoke(cardData, _index);
     }
 
     public void OnTurnEnd()

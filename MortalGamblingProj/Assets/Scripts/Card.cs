@@ -37,9 +37,16 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     public delegate void Activate(CardData cardData);
     public event Activate OnActivate;
 
-    public void Initialized()
+    public void Initialized(
+        Type type,
+        Target target,
+        float baseDamage)
     {
+        _cardData._type = type;
+        _cardData._target = target;
+        _cardData._baseDamage = baseDamage;
         _image = gameObject.GetComponent<Image>();
+        _registeringInput = false;
     }
 
     public void Tick()

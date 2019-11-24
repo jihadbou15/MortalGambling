@@ -4,15 +4,23 @@ using UnityEngine;
 
 public class Team : MonoBehaviour
 {
-    public delegate void TeamCardHandler(Card.CardData cardData, int id);
+    public delegate void TeamCardHandler(Card.CardData cardData, int id, int playerId);
     public event TeamCardHandler OnCardActivate;
 
     private int _id = -1;
     private List<Player> _players;
+    private int _playerAmount = 1;
 
-    public void Initialize(int id)
+    public void Initialize(int id, Player prefab)
     {
         _id = id;
+        for (int i = 0; i < _playerAmount; i++)
+        {
+            Player newPlayer = GameObject.Instantiate(prefab);
+            newPlayer.Initialize(i);
+            newPlayer.OnActivate += DoCardActivate;
+            _players.Add(newPlayer);
+        }        
     }
 
     public void Tick()
@@ -20,13 +28,18 @@ public class Team : MonoBehaviour
 
     }
 
-    public void ApplyDamage(float damage, int playerIdx)
+    public void ApplyHealthChange(float healthChange, int playerIdx)
     {
-
+        _players[playerIdx].OnHealthChange(healthChange);
     }
 
-    private void DoCardActivate(Card.CardData cardData)
+    public void ApplyStaminaChange(float staminaChange, int playerIdx)
     {
-        OnCardActivate?.Invoke(cardData, _id);
+        _players[playerIdx].OnStaminaChange(staminaChange);
+    }
+
+    private void DoCardActivate(Card.CardData cardData, int playerId)
+    {
+        OnCardActivate?.Invoke(cardData, _id, playerId);
     }
 }
