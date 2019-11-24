@@ -14,13 +14,14 @@ public class GameManager : MonoBehaviour
         _inputManager.Initialize();
         _inputManager.KeyDown += OnKeyDown;
 
-        _phaseManager.Initialize();
+        _teamManager.Initialize();
+        _teamManager.OnCardActivate += DoCardActivate;
+
+        _phaseManager.Initialize(_teamManager.GetTeamAmount());
         _phaseManager.OnPhaseEnd += DoPhaseEnd;
 
         _turnManager.Initialize();
         _turnManager.OnTurnEnd += DoTurnEnd;
-
-        _teamManager.Initialize();
     }
 
     void Update()
@@ -44,5 +45,10 @@ public class GameManager : MonoBehaviour
     private void DoTurnEnd()
     {
 
+    }
+
+    private void DoCardActivate(List<KeyValuePair<Card.Target, int>> readyTeams)
+    {
+        _turnManager.ResolveTeams(readyTeams, _phaseManager.GetAttackingTeamIdx());
     }
 }
