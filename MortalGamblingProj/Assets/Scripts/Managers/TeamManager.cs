@@ -27,6 +27,7 @@ public class TeamManager : MonoBehaviour
     [SerializeField] private int _teamAmount = 0;
     [SerializeField] private Player _playerPrefab = null;
     [SerializeField] private Card _cardPrefab = null;
+    [SerializeField] private Team _teamPrefab = null;
     [SerializeField] private List<Vector3> _teamPositions = new List<Vector3>();
     private List<Team> _teams = new List<Team>();
 
@@ -34,13 +35,17 @@ public class TeamManager : MonoBehaviour
 
     public void Initialize()
     {
+        GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
         for(int i = 0; i < _teamAmount; ++i)
         {
-            Team newTeam = new Team();
-            newTeam.Initialize(i, _playerPrefab, _cardPrefab, _teamPositions[i]);
+            Team newTeam = GameObject.Instantiate(_teamPrefab);
+            newTeam.Initialize(i, _playerPrefab, _cardPrefab);
+            newTeam.transform.position = _teamPositions[i];
             newTeam.OnCardActivate += DoCardActivate;
             newTeam.OnTeamPlayerStaminaEmpty += DoTeamPlayerStaminaEmpty;
+            newTeam.transform.SetParent(canvas.transform);
             _teams.Add(newTeam);
+      
         }
     }
 

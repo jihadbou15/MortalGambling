@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Health
   - Stamina
+  - Canvas
   layers:
   - Default
   - TransparentFX

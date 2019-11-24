@@ -13,10 +13,10 @@ public class Team : MonoBehaviour
 
 
     private int _id = -1;
-    private List<Player> _players;
+    private List<Player> _players = new List<Player>();
     private int _playerAmount = 1;
 
-    public void Initialize(int id, Player prefab, Card cardPrefab, Vector3 PlayerPosition)
+    public void Initialize(int id, Player prefab, Card cardPrefab)
     {
         _id = id;
         for (int i = 0; i < _playerAmount; i++)

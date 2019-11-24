@@ -360,7 +360,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.000026703, y: -136}
+  m_AnchoredPosition: {x: 7.9999733, y: 21}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2674710261467628932
@@ -435,7 +435,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -288}
+  m_AnchoredPosition: {x: 8, y: -131}
   m_SizeDelta: {x: 160, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3049802780288531990
@@ -524,7 +524,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -332}
+  m_AnchoredPosition: {x: 8, y: -175}
   m_SizeDelta: {x: 160, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &923125283168712636
@@ -846,10 +846,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48e849ca59afbe046be39b8ad2f62059, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _health: 0
   _maxHealth: 100
-  _stamina: 0
   _maxStamina: 100
-  _cards: []
+  _cardAmount: 3
   _UIHealth: {fileID: 3049802780288531990}
   _UIStamina: {fileID: 923125283168712636}
+  _cardPosition: {fileID: 8299525290672099273}

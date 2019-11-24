@@ -66,7 +66,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (_registeringInput) _image.color = Color.clear;
+        if (_registeringInput) _image.color = Color.red;
     }
 
     public void SetRegisteringInput(bool isRegisteringInput)

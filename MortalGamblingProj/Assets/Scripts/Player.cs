@@ -18,7 +18,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float _maxHealth;
     private float _stamina;
     [SerializeField] private float _maxStamina;
-    private List<Card> _cards;
+    private List<Card> _cards = new List<Card>();
     [SerializeField] private int _cardAmount = 3;
     [SerializeField] private Slider _UIHealth;
     [SerializeField] private Slider _UIStamina;
@@ -29,12 +29,12 @@ public class Player : MonoBehaviour
 
     public void Initialize(int index, Card prefab)
     {
-        for(int i = 0; i < _cardAmount -1; i++)
+        for(int i = 0; i < _cardAmount; i++)
         {
             Card newCard = GameObject.Instantiate(prefab);
             newCard.Initialize(Card.Type.Melee, (Card.Target)i - 1, (1.5f - (.5f * i)) * 20.0f);
             newCard.OnActivate += OnCardChosen;
-            newCard.transform.SetPositionAndRotation(new Vector3(_cardPosition.transform.position.x + (50.0f * i), _cardPosition.transform.position.y, 0),newCard.transform.rotation);
+            newCard.transform.SetPositionAndRotation(new Vector3(_cardPosition.transform.position.x + (200.0f * i), _cardPosition.transform.position.y, 0),newCard.transform.rotation);
             _cards.Add(newCard);
             newCard.transform.SetParent(gameObject.transform);
         }
