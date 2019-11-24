@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
 
     private void DoPhaseEnd()
     {
-
+        _phaseManager.SwapPhase();
     }
 
     private void DoTurnEnd(TurnManager.Outcome outcome, List<TeamManager.TeamChoiceData> teamChoices, int defenderIdx, int attackerIdx)
