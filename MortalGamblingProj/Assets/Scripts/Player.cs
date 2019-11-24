@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Player : MonoBehaviour
 {
     //Events
-    public delegate void Activate(Card.Target target, float damage);
+    public delegate void Activate(Card.CardData cardData);
     public event Activate OnActivate;
 
     public delegate void PlayerEmpty();
