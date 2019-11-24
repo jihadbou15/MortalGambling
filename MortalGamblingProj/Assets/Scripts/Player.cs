@@ -22,7 +22,7 @@ public class Player : MonoBehaviour
     [SerializeField] private int _cardAmount = 3;
     [SerializeField] private Slider _UIHealth;
     [SerializeField] private Slider _UIStamina;
-    [SerializeField] private Transform _CardPosition;
+    [SerializeField] private Transform _cardPosition;
 
 
     private int _index = -1;
@@ -34,7 +34,7 @@ public class Player : MonoBehaviour
             Card newCard = GameObject.Instantiate(prefab);
             newCard.Initialize(Card.Type.Melee, (Card.Target)i - 1, (1.5f - (.5f * i)) * 20.0f);
             newCard.OnActivate += OnCardChosen;
-            newCard.transform.SetPositionAndRotation(new Vector3(-50.0f + (50.0f * i), 0, 0),newCard.transform.rotation);
+            newCard.transform.SetPositionAndRotation(new Vector3(_cardPosition.transform.position.x + (50.0f * i), _cardPosition.transform.position.y, 0),newCard.transform.rotation);
             _cards.Add(newCard);
             newCard.transform.SetParent(gameObject.transform);
         }
