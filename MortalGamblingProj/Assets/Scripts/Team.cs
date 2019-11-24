@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Team : MonoBehaviour
 {
-    public delegate void TeamCardHandler(Card.Target target, int id);
+    public delegate void TeamCardHandler(Card.CardData cardData, int id);
     public event TeamCardHandler OnCardActivate;
 
     private int _id = -1;
@@ -20,8 +20,13 @@ public class Team : MonoBehaviour
 
     }
 
-    private void DoCardActivate(Card.Target target)
+    public void ApplyDamage(float damage, int playerIdx)
     {
-        OnCardActivate?.Invoke(target, _id);
+
+    }
+
+    private void DoCardActivate(Card.CardData cardData)
+    {
+        OnCardActivate?.Invoke(cardData, _id);
     }
 }
