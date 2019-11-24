@@ -28,7 +28,38 @@ public class Player : MonoBehaviour
 
     private void OnCardChosen(Card.Target target)
     {
-        
+        foreach (Card card in _cards)
+        {
+            card.SetRegisteringInput(false);
+        }
     }
 
+    public void OnTurnEnd()
+    {
+        foreach (Card card in _cards)
+        {
+            card.SetRegisteringInput(true);
+        }
+    }
+
+    public void OnHealthLost(float healthLost)
+    {
+        _health -= healthLost;
+    }
+
+    public void OnStaminaLost(float staminaLost)
+    {
+        _stamina -= staminaLost;
+    }
+
+    public void Reset()
+    {
+        foreach (Card card in _cards)
+        {
+            card.SetRegisteringInput(true);
+        }
+
+        _health = _maxHealth;
+        _stamina = _maxStamina;
+    }
 }
