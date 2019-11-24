@@ -24,9 +24,9 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     [System.Serializable]
     public struct CardData
     {
-        private Type _type;
-        private Target _target;
-        private float _baseDamage;
+        public Type _type;
+        public Target _target;
+        public float _baseDamage;
     }
 
     [SerializeField] private CardData _cardData;
