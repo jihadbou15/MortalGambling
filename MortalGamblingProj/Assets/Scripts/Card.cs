@@ -14,19 +14,20 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     }
     public enum Target
     {
-        Head,
-        Body,
-        Legs
+        Head = 1,
+        Body = 0,
+        Legs = -1,
     }
 
     //Variables
     [SerializeField] private Type _type;
     [SerializeField] private Target _target;
+    [SerializeField] private float _baseDamage;
     private Image _image;
     private bool _registeringInput;
 
     //Events
-    public delegate void Activate(Target target);
+    public delegate void Activate(Target target, float damage);
     public event Activate OnActivate;
 
     void Initialized()
@@ -41,7 +42,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if(_registeringInput) OnActivate.Invoke(_target);
+        if(_registeringInput) OnActivate.Invoke(_target, _baseDamage);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
