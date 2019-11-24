@@ -4,7 +4,14 @@ using UnityEngine;
 
 public class TurnManager : MonoBehaviour
 {
-    public delegate void TurnHandler();
+    public enum Outcome
+    {
+        Parry,
+        Defend,
+        Hit
+    }
+
+    public delegate void TurnHandler(Outcome outcome, List<TeamManager.TeamChoiceData> teamChoices, int defenderIdx, int attackerIdx);
     public event TurnHandler OnTurnEnd;
 
     public void Initialize()
@@ -17,21 +24,41 @@ public class TurnManager : MonoBehaviour
 
     }
 
-    public void ResolveTeams(List<KeyValuePair<Card.CardData, int>> teamChoices, int attackingTeamIdx)
+    public void ResolveTeams(List<TeamManager.TeamChoiceData> teamChoices, int attackingTeamIdx)
     {
-        int difference = Mathf.Abs((int)teamChoices[0].Key - (int)teamChoices[1].Key);
+        int defendingTeamIdx = 0;
+        if(attackingTeamIdx == defendingTeamIdx)
+        {
+            defendingTeamIdx++;
+        }
+        
+        if(teamChoices[attackingTeamIdx].CardData._type == Card.Type.Melee &&
+            teamChoices[defendingTeamIdx].CardData._type == Card.Type.Melee)
+        {
+            int difference = Mathf.Abs((int)teamChoices[0].CardData._target - (int)teamChoices[1].CardData._target);
 
-        if (difference == 0)
-        {
-            //Parry
+            if (difference == 0)
+            {
+                OnTurnEnd?.Invoke(Outcome.Parry, teamChoices, defendingTeamIdx, attackingTeamIdx);
+            }
+            else if (difference == 1)
+            {
+                OnTurnEnd?.Invoke(Outcome.Defend, teamChoices, defendingTeamIdx, attackingTeamIdx);
+            }
+            else if (difference == 2)
+            {
+                OnTurnEnd?.Invoke(Outcome.Hit, teamChoices, defendingTeamIdx, attackingTeamIdx);
+            }
         }
-        else if(difference == 1)
+        else if(teamChoices[attackingTeamIdx].CardData._type == Card.Type.Magic &&
+            teamChoices[defendingTeamIdx].CardData._type == Card.Type.Magic)
         {
-            //Defend
+
         }
-        else if(difference == 2)
+        else if (teamChoices[attackingTeamIdx].CardData._type == Card.Type.Item &&
+            teamChoices[defendingTeamIdx].CardData._type == Card.Type.Item)
         {
-            //Hit
+
         }
     }
 }

@@ -4,20 +4,35 @@ using UnityEngine;
 
 public class TeamManager : MonoBehaviour
 {
-    public delegate void TeamManagerCardHandler(List<KeyValuePair<Card.Target, int>> teamChoices);
+    public struct TeamChoiceData
+    {
+        public TeamChoiceData(Card.CardData cardData, int teamIdx, int playerIdx)
+        {
+            CardData = cardData;
+            TeamIdx = teamIdx;
+            PlayerIdx = playerIdx;
+        }
+
+        public Card.CardData CardData;
+        public int TeamIdx;
+        public int PlayerIdx;
+    }
+
+    public delegate void TeamManagerCardHandler(List<TeamChoiceData> teamChoices);
     public event TeamManagerCardHandler OnCardActivate;
 
     [SerializeField] private int _teamAmount = 0;
+    [SerializeField] private Player _playerPrefab = null;
     private List<Team> _teams = new List<Team>();
 
-    private List<KeyValuePair<Card.Target, int>> _teamChoices = new List<KeyValuePair<Card.Target, int>>();
+    private List<TeamChoiceData> _teamChoices = new List<TeamChoiceData>();
 
     public void Initialize()
     {
         for(int i = 0; i < _teamAmount; ++i)
         {
             Team newTeam = new Team();
-            newTeam.Initialize(i);
+            newTeam.Initialize(i, _playerPrefab);
             newTeam.OnCardActivate += DoCardActivate;
             _teams.Add(newTeam);
         }
@@ -42,8 +57,19 @@ public class TeamManager : MonoBehaviour
         return _teamAmount;
     }
 
-    private void DoCardActivate(Card.Target target, int id)
+    public void ApplyTeamHealthChange(int teamIdx, int playerIdx, int healthChange)
     {
-        _teamChoices.Add(new KeyValuePair<Card.Target, int>( target, id));
+        _teams[teamIdx].ApplyHealthChange(healthChange, playerIdx);
     }
+
+    public void ApplyTeamStaminaChange(int teamIdx, int playerIdx, int staminaChange)
+    {
+        _teams[teamIdx].ApplyHealthChange(staminaChange, playerIdx);
+    }
+
+    private void DoCardActivate(Card.CardData target, int id, int playerId)
+    {
+        _teamChoices.Add(new TeamChoiceData( target, id, playerId));
+    }
+
 }

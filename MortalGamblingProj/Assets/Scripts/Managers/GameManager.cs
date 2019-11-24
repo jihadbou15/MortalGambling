@@ -42,12 +42,29 @@ public class GameManager : MonoBehaviour
 
     }
 
-    private void DoTurnEnd()
+    private void DoTurnEnd(TurnManager.Outcome outcome, List<TeamManager.TeamChoiceData> teamChoices, int defenderIdx, int attackerIdx)
     {
-
+        switch(outcome)
+        {
+            case TurnManager.Outcome.Parry:
+            {
+                _phaseManager.SwapPhase();
+                break;
+            }
+            case TurnManager.Outcome.Defend:
+            {
+                _teamManager.ApplyTeamStaminaChange(defenderIdx, teamChoices[defenderIdx].PlayerIdx, (int)teamChoices[attackerIdx].CardData._baseDamage);
+                break;
+            }
+            case TurnManager.Outcome.Hit:
+            {
+                _teamManager.ApplyTeamHealthChange(defenderIdx, teamChoices[defenderIdx].PlayerIdx, (int)teamChoices[attackerIdx].CardData._baseDamage);
+                break;
+            }
+        }
     }
 
-    private void DoCardActivate(List<KeyValuePair<Card.Target, int>> readyTeams)
+    private void DoCardActivate(List<TeamManager.TeamChoiceData> readyTeams)
     {
         _turnManager.ResolveTeams(readyTeams, _phaseManager.GetAttackingTeamIdx());
     }
