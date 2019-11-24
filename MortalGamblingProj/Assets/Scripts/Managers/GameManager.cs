@@ -15,7 +15,11 @@ public class GameManager : MonoBehaviour
         _inputManager.KeyDown += OnKeyDown;
 
         _phaseManager.Initialize();
+        _phaseManager.OnPhaseEnd += DoPhaseEnd;
+
         _turnManager.Initialize();
+        _turnManager.OnTurnEnd += DoTurnEnd;
+
         _teamManager.Initialize();
     }
 
@@ -30,5 +34,15 @@ public class GameManager : MonoBehaviour
     private void OnKeyDown(KeyCode keyCode)
     {
         //Check for input here
+    }
+
+    private void DoPhaseEnd()
+    {
+
+    }
+
+    private void DoTurnEnd()
+    {
+
     }
 }
