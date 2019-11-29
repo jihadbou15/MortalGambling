@@ -15,10 +15,13 @@ public class Team : MonoBehaviour
     private int _id = -1;
     private List<Player> _players = new List<Player>();
     private int _playerAmount = 1;
+    private RectTransform _rectTransform = null;
 
     public void Initialize(int id)
     {
         _id = id;
+        _rectTransform = gameObject.GetComponent<RectTransform>();
+        Debug.Assert(_rectTransform, "No RectTransform found on Team Object");
         for (int i = 0; i < _playerAmount; i++)
         {
             Player newPlayer = GameObject.Instantiate(_playerPrefab);
@@ -53,6 +56,16 @@ public class Team : MonoBehaviour
     public void OnPlayerStaminaEmpty()
     {
         OnTeamPlayerStaminaEmpty.Invoke(_id);
+    }
+
+    public void SetPosition(Vector2 newPosition)
+    {
+        _rectTransform.anchoredPosition = newPosition;
+    }
+
+    public void SetRotation(float angle)
+    {
+        _rectTransform.Rotate(new Vector3(0, 0, angle));
     }
 
     private void DoCardActivate(Card.CardData cardData, int playerId)

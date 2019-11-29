@@ -26,7 +26,7 @@ public class TeamManager : MonoBehaviour
 
     [SerializeField] private int _teamAmount = 0;
     [SerializeField] private Team _teamPrefab = null;
-    [SerializeField] private List<Vector3> _teamPositions = new List<Vector3>();
+    [SerializeField] private float _teamOffset = 0.0f;
     private List<Team> _teams = new List<Team>();
 
     private List<TeamChoiceData> _teamChoices = new List<TeamChoiceData>();
@@ -38,12 +38,16 @@ public class TeamManager : MonoBehaviour
         {
             Team newTeam = GameObject.Instantiate(_teamPrefab);
             newTeam.Initialize(i);
-            newTeam.transform.position = _teamPositions[i];
+
             newTeam.OnCardActivate += DoCardActivate;
             newTeam.OnTeamPlayerStaminaEmpty += DoTeamPlayerStaminaEmpty;
+
             newTeam.transform.SetParent(canvas.transform);
+            newTeam.SetPosition(new Vector2(
+                Mathf.Cos(i * (2.0f * Mathf.PI / _teamAmount) - Mathf.PI / 2.0f) * _teamOffset, 
+                Mathf.Sin(i * (2.0f * Mathf.PI / _teamAmount) - Mathf.PI / 2.0f) * _teamOffset));
+            newTeam.SetRotation(i * (360.0f / _teamAmount));
             _teams.Add(newTeam);
-      
         }
     }
 
