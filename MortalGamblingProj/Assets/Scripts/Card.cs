@@ -13,7 +13,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         Magic,
         Item
     }
-    public enum Target
+    public enum Target : int
     {
         Head = 1,
         Body = 0,
@@ -45,7 +45,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     {
         _cardData._type = type;
         _cardData._target = target;
-        _cardData._baseDamage = baseDamage;
+        _cardData._baseDamage = baseDamage + ((float)_cardData._target * (.5f * baseDamage));
         _image = gameObject.GetComponent<Image>();
         _image.sprite = Sprite.Create(
             _meleeTextures[(int)target + 1], 

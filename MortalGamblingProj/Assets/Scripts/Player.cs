@@ -15,14 +15,14 @@ public class Player : MonoBehaviour
 
     //Variables
     private float _health;
-    [SerializeField] private float _maxHealth;
+    [SerializeField] private float _maxHealth = 100;
     private float _stamina;
-    [SerializeField] private float _maxStamina;
+    [SerializeField] private float _maxStamina = 100;
     private List<Card> _cards = new List<Card>();
     [SerializeField] private int _cardAmount = 3;
-    [SerializeField] private Slider _UIHealth;
-    [SerializeField] private Slider _UIStamina;
-    [SerializeField] private Transform _cardPosition;
+    [SerializeField] private Slider _UIHealth = null;
+    [SerializeField] private Slider _UIStamina = null;
+    [SerializeField] private Transform _cardPosition =  null;
     [SerializeField] private Card _cardPrefab = null;
     [SerializeField] private float _cardOffset = 0.0f;
 
@@ -34,7 +34,7 @@ public class Player : MonoBehaviour
         {
             Card newCard = GameObject.Instantiate(_cardPrefab);
             //TODO [JIHAD] - Please get rid of these magic numbers
-            newCard.Initialize(Card.Type.Melee, (Card.Target)i - 1, (1.5f - (.5f * i)) * 20.0f);
+            newCard.Initialize(Card.Type.Melee, (Card.Target)i - 1, 20.0f);
             newCard.OnActivate += OnCardChosen;
             newCard.transform.SetPositionAndRotation(new Vector3(
                 _cardPosition.transform.position.x + (_cardOffset * (i - 1)), 
