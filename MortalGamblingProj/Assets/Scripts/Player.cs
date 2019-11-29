@@ -36,7 +36,10 @@ public class Player : MonoBehaviour
             //TODO [JIHAD] - Please get rid of these magic numbers
             newCard.Initialize(Card.Type.Melee, (Card.Target)i - 1, (1.5f - (.5f * i)) * 20.0f);
             newCard.OnActivate += OnCardChosen;
-            newCard.transform.SetPositionAndRotation(new Vector3(_cardPosition.transform.position.x + (_cardOffset * (i - 1)), _cardPosition.transform.position.y, 0),newCard.transform.rotation);
+            newCard.transform.SetPositionAndRotation(new Vector3(
+                _cardPosition.transform.position.x + (_cardOffset * (i - 1)), 
+                _cardPosition.transform.position.y, 0),
+                newCard.transform.rotation);
             _cards.Add(newCard);
             newCard.transform.SetParent(gameObject.transform);
         }
@@ -52,19 +55,13 @@ public class Player : MonoBehaviour
 
     private void OnCardChosen(Card.CardData cardData)
     {
-        foreach (Card card in _cards)
-        {
-            card.SetRegisteringInput(false);
-        }
+        EnableCardInput(false);
         OnActivate.Invoke(cardData, _index);
     }
 
     public void OnTurnEnd()
     {
-        foreach (Card card in _cards)
-        {
-            card.SetRegisteringInput(true);
-        }
+        EnableCardInput(true);
     }
 
     public void OnHealthChange(float healthChange)
@@ -79,12 +76,17 @@ public class Player : MonoBehaviour
         _UIStamina.value = _stamina / _maxStamina;
     }
 
-    public void Reset()
+    public void EnableCardInput(bool isEnabled)
     {
         foreach (Card card in _cards)
         {
-            card.SetRegisteringInput(true);
+            card.SetRegisteringInput(isEnabled);
         }
+    }
+
+    public void Reset()
+    {
+        EnableCardInput(true);
 
         _health = _maxHealth;
         _stamina = _maxStamina;

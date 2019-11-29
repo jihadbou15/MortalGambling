@@ -23,6 +23,9 @@ public class GameManager : MonoBehaviour
 
         _turnManager.Initialize();
         _turnManager.OnTurnEnd += DoTurnEnd;
+
+        _teamManager.EnableTeamCardInput(true, _phaseManager.GetAttackingTeamIdx());
+        _teamManager.EnableTeamCardInput(false, (_phaseManager.GetAttackingTeamIdx() - 1)*-1);
     }
 
     void Update()
@@ -40,7 +43,8 @@ public class GameManager : MonoBehaviour
 
     private void DoPhaseEnd()
     {
-        _phaseManager.SwapPhase();
+        _teamManager.EnableTeamCardInput(true, _phaseManager.GetAttackingTeamIdx());
+        _teamManager.EnableTeamCardInput(false, (_phaseManager.GetAttackingTeamIdx() - 1) * -1);
     }
 
     private void DoTurnEnd(TurnManager.Outcome outcome, List<TeamManager.TeamChoiceData> teamChoices, int defenderIdx, int attackerIdx)
@@ -54,12 +58,12 @@ public class GameManager : MonoBehaviour
             }
             case TurnManager.Outcome.Defend:
             {
-                _teamManager.ApplyTeamStaminaChange(defenderIdx, teamChoices[defenderIdx].PlayerIdx, (int)teamChoices[attackerIdx].CardData._baseDamage);
+                _teamManager.ApplyTeamStaminaChange(defenderIdx, teamChoices[defenderIdx].PlayerIdx, -(int)teamChoices[attackerIdx].CardData._baseDamage);
                 break;
             }
             case TurnManager.Outcome.Hit:
             {
-                _teamManager.ApplyTeamHealthChange(defenderIdx, teamChoices[defenderIdx].PlayerIdx, (int)teamChoices[attackerIdx].CardData._baseDamage);
+                _teamManager.ApplyTeamHealthChange(defenderIdx, teamChoices[defenderIdx].PlayerIdx, -(int)teamChoices[attackerIdx].CardData._baseDamage);
                 break;
             }
         }

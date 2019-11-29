@@ -77,7 +77,7 @@ public class TeamManager : MonoBehaviour
 
     public void ApplyTeamStaminaChange(int teamIdx, int playerIdx, int staminaChange)
     {
-        _teams[teamIdx].ApplyHealthChange(staminaChange, playerIdx);
+        _teams[teamIdx].ApplyStaminaChange(staminaChange, playerIdx);
     }
 
     public void DoTeamPlayerStaminaEmpty(int id)
@@ -85,8 +85,14 @@ public class TeamManager : MonoBehaviour
         OnStaminaEmpty?.Invoke(id);
     }
 
+    public void EnableTeamCardInput(bool isEnabled, int idx)
+    {
+        _teams[idx].EnableTeamCardInput(isEnabled);
+    }
+
     private void DoCardActivate(Card.CardData target, int id, int playerId)
     {
         _teamChoices.Add(new TeamChoiceData( target, id, playerId));
+        _teams[(id - 1) * -1].EnableTeamCardInput(true);
     }
 }

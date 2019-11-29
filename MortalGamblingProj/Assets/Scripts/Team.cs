@@ -68,6 +68,14 @@ public class Team : MonoBehaviour
         _rectTransform.Rotate(new Vector3(0, 0, angle));
     }
 
+    public void EnableTeamCardInput(bool isEnabled)
+    {
+        foreach(Player player in _players)
+        {
+            player.EnableCardInput(isEnabled);
+        }
+    }
+
     private void DoCardActivate(Card.CardData cardData, int playerId)
     {
         OnCardActivate?.Invoke(cardData, _id, playerId);

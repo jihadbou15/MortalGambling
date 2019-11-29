@@ -33,5 +33,6 @@ public class PhaseManager : MonoBehaviour
         {
             _attackTeamIdx = 0;
         }
+        OnPhaseEnd?.Invoke();
     }
 }
