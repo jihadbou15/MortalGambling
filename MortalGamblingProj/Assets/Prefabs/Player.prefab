@@ -852,3 +852,5 @@ MonoBehaviour:
   _UIHealth: {fileID: 3049802780288531990}
   _UIStamina: {fileID: 923125283168712636}
   _cardPosition: {fileID: 8299525290672099273}
+  _cardPrefab: {fileID: 5333340465372817216, guid: 356a4c697d91c9e4b93ad499750fc80e,
+    type: 3}

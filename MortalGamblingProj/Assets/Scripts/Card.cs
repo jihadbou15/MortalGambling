@@ -30,6 +30,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     }
 
     [SerializeField] private CardData _cardData;
+    [SerializeField] private List<Texture2D> _meleeTextures = new List<Texture2D>();
     private Image _image;
     private bool _registeringInput;
 
@@ -46,6 +47,10 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         _cardData._target = target;
         _cardData._baseDamage = baseDamage;
         _image = gameObject.GetComponent<Image>();
+        _image.sprite = Sprite.Create(
+            _meleeTextures[(int)target + 1], 
+            new Rect(0.0f, 0.0f, _meleeTextures[(int)target + 1].width, _meleeTextures[(int)target + 1].height), 
+            new Vector2(0.5f, 0.5f));
         _registeringInput = false;
     }
 

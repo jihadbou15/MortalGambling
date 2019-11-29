@@ -11,18 +11,18 @@ public class Team : MonoBehaviour
     public event TeamPlayerEmpty OnTeamPlayerHealthEmpty;
     public event TeamPlayerEmpty OnTeamPlayerStaminaEmpty;
 
-
+    [SerializeField] private Player _playerPrefab = null;
     private int _id = -1;
     private List<Player> _players = new List<Player>();
     private int _playerAmount = 1;
 
-    public void Initialize(int id, Player prefab, Card cardPrefab)
+    public void Initialize(int id)
     {
         _id = id;
         for (int i = 0; i < _playerAmount; i++)
         {
-            Player newPlayer = GameObject.Instantiate(prefab);
-            newPlayer.Initialize(i, cardPrefab);
+            Player newPlayer = GameObject.Instantiate(_playerPrefab);
+            newPlayer.Initialize(i);
             newPlayer.OnActivate += DoCardActivate;
             newPlayer.OnPlayerHealthEmpty += OnPlayerHealthEmpty;
             _players.Add(newPlayer);
