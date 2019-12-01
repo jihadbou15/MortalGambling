@@ -71,12 +71,12 @@ public class GameManager : MonoBehaviour
             }
             case TurnManager.Outcome.Defend:
             {
-                _teamManager.ApplyTeamStaminaChange(defenderIdx, teamChoices[defenderIdx].PlayerIdx, -(int)teamChoices[attackerIdx].Action.Data.StaminaCost);
+                _teamManager.ApplyTeamStaminaChange(defenderIdx, teamChoices[1].PlayerIdx, -(int)teamChoices[0].Action.Data.StaminaCost);
                 break;
             }
             case TurnManager.Outcome.Hit:
             {
-                _teamManager.ApplyTeamHealthChange(defenderIdx, teamChoices[defenderIdx].PlayerIdx, -(int)teamChoices[attackerIdx].Action.Data.BaseDamage);
+                _teamManager.ApplyTeamHealthChange(defenderIdx, teamChoices[1].PlayerIdx, -(int)teamChoices[0].Action.Data.BaseDamage);
                 break;
             }
         }
@@ -84,6 +84,7 @@ public class GameManager : MonoBehaviour
         if(_hasToSwapPhase)
         {
             _phaseManager.SwapPhase();
+            _hasToSwapPhase = false;
         }
     }
 
