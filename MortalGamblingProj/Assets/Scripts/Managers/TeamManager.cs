@@ -105,6 +105,14 @@ public class TeamManager : MonoBehaviour
         _teams[idx].EnableTeamCardInput(isEnabled);
     }
 
+    public void Clear()
+    {
+        foreach(Team team in _teams)
+        {
+            Destroy(team.gameObject);
+        }
+    }
+
     private void DoCardActivate(Card.CardData target, int id, int playerId)
     {
         _teamChoices.Add(new TeamChoiceData( target, id, playerId));

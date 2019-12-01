@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject _endScreen = null;
 
     private bool _hasToSwapPhase = false;
+    private bool _hasEnded = false;
 
     void Start()
     {
@@ -36,6 +37,11 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        if(_hasEnded)
+        {
+            return;
+        }
+
         _inputManager.Tick();
         _phaseManager.Tick();
         _turnManager.Tick();
@@ -97,5 +103,7 @@ public class GameManager : MonoBehaviour
     private void DoHealthEmpty(int teamId)
     {
         _endScreen.SetActive(true);
+        _hasEnded = true;
+        _teamManager.Clear();
     }
 }
