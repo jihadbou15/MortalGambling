@@ -6,14 +6,6 @@ using UnityEngine.EventSystems;
 
 public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
-    //Enums
-    public enum Target : int
-    {
-        Head = 1,
-        Body = 0,
-        Legs = -1,
-    }
-
     //Variables
     [SerializeField] private Action _action;
     [SerializeField] private List<Texture2D> _meleeTextures = new List<Texture2D>();
