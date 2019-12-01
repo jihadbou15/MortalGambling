@@ -71,7 +71,7 @@ public class GameManager : MonoBehaviour
             }
             case TurnManager.Outcome.Defend:
             {
-                _teamManager.ApplyTeamStaminaChange(defenderIdx, teamChoices[defenderIdx].PlayerIdx, -(int)teamChoices[attackerIdx].Action.Data.BaseDamage);
+                _teamManager.ApplyTeamStaminaChange(defenderIdx, teamChoices[defenderIdx].PlayerIdx, -(int)teamChoices[attackerIdx].Action.Data.StaminaCost);
                 break;
             }
             case TurnManager.Outcome.Hit:
