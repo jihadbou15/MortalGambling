@@ -855,3 +855,7 @@ MonoBehaviour:
   _cardPrefab: {fileID: 5333340465372817216, guid: 356a4c697d91c9e4b93ad499750fc80e,
     type: 3}
   _cardOffset: 100
+  _staminaRechargePercent: 50
+  _staminaBaseRechargePercent: 10
+  _cardBaseDamage: 20
+  _cardBaseStaminaCost: 10

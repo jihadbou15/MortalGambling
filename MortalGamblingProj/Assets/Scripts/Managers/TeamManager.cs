@@ -80,6 +80,14 @@ public class TeamManager : MonoBehaviour
         _teams[teamIdx].ApplyStaminaChange(staminaChange, playerIdx);
     }
 
+    public void RechargeEveryoneStamina()
+    {
+        foreach(Team team in _teams)
+        {
+            team.RechargeTeamStamina();
+        }
+    }
+
     public void DoTeamPlayerStaminaEmpty(int id)
     {
         OnStaminaEmpty?.Invoke(id);
@@ -94,5 +102,9 @@ public class TeamManager : MonoBehaviour
     {
         _teamChoices.Add(new TeamChoiceData( target, id, playerId));
         _teams[(id - 1) * -1].EnableTeamCardInput(true);
+        if(_teamChoices.Count == 1)
+        {
+            _teams[id].ApplyStaminaChange(-target.StaminaCost, playerId);
+        }
     }
 }

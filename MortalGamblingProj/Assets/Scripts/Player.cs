@@ -25,6 +25,10 @@ public class Player : MonoBehaviour
     [SerializeField] private Transform _cardPosition =  null;
     [SerializeField] private Card _cardPrefab = null;
     [SerializeField] private float _cardOffset = 0.0f;
+    [SerializeField] private float _staminaRechargePercent = 0.0f;
+    [SerializeField] private float _staminaBaseRechargePercent = 0.0f;
+    [SerializeField] private float _cardBaseDamage = 0.0f;
+    [SerializeField] private float _cardBaseStaminaCost = 0.0f;
 
     private int _index = -1;
 
@@ -33,8 +37,7 @@ public class Player : MonoBehaviour
         for(int i = 0; i < _cardAmount; i++)
         {
             Card newCard = GameObject.Instantiate(_cardPrefab);
-            //TODO [JIHAD] - Please get rid of these magic numbers
-            newCard.Initialize(Card.Type.Melee, (Card.Target)i - 1, 20.0f);
+            newCard.Initialize(Card.Type.Melee, (Card.Target)i - 1, _cardBaseDamage, _cardBaseStaminaCost);
             newCard.OnActivate += OnCardChosen;
             newCard.transform.SetPositionAndRotation(new Vector3(
                 _cardPosition.transform.position.x + (_cardOffset * (i - 1)), 
@@ -64,16 +67,47 @@ public class Player : MonoBehaviour
         EnableCardInput(true);
     }
 
-    public void OnHealthChange(float healthChange)
+    public void DoHealthChange(float healthChange)
     {
         _health += healthChange;
+        if(_health > _maxHealth)
+        {
+            _health = _maxHealth;
+        }
+        else if(_health <= 0.0f)
+        {
+            _health = 0.0f;
+            OnPlayerHealthEmpty?.Invoke();
+        }
         _UIHealth.value = _health / _maxHealth;
     }
 
-    public void OnStaminaChange(float staminaChange)
+    public void DoStaminaChange(float staminaChange)
     {
         _stamina += staminaChange;
+        if (_stamina > _maxStamina)
+        {
+            _stamina = _maxStamina;
+        }
+        else if (_stamina <= 0.0f)
+        {
+            _stamina = 0.0f;
+            OnPlayerStaminaEmpty?.Invoke();
+        }
         _UIStamina.value = _stamina / _maxStamina;
+    }
+
+    public void RechargeStamina()
+    {
+        float staminaRecharge1 = _staminaBaseRechargePercent * 0.01f * _maxStamina;
+        float staminaRecharge2 = _staminaRechargePercent * 0.01f * _stamina;
+        if (staminaRecharge2 < staminaRecharge1)
+        {
+            DoStaminaChange(staminaRecharge1);
+            return;
+        }
+
+        DoStaminaChange(staminaRecharge2);
     }
 
     public void EnableCardInput(bool isEnabled)

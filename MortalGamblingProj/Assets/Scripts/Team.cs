@@ -40,12 +40,20 @@ public class Team : MonoBehaviour
 
     public void ApplyHealthChange(float healthChange, int playerIdx)
     {
-        _players[playerIdx].OnHealthChange(healthChange);
+        _players[playerIdx].DoHealthChange(healthChange);
     }
 
     public void ApplyStaminaChange(float staminaChange, int playerIdx)
     {
-        _players[playerIdx].OnStaminaChange(staminaChange);
+        _players[playerIdx].DoStaminaChange(staminaChange);
+    }
+
+    public void RechargeTeamStamina()
+    {
+        foreach(Player player in _players)
+        {
+            player.RechargeStamina();
+        }
     }
 
     public void OnPlayerHealthEmpty()

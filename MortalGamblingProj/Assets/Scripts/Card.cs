@@ -24,9 +24,10 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     [System.Serializable]
     public struct CardData
     {
-        public Type _type;
-        public Target _target;
-        public float _baseDamage;
+        public Type Type;
+        public Target Target;
+        public float BaseDamage;
+        public float StaminaCost;
     }
 
     [SerializeField] private CardData _cardData;
@@ -41,11 +42,14 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     public void Initialize(
         Type type,
         Target target,
-        float baseDamage)
+        float baseDamage, 
+        float staminaCost)
     {
-        _cardData._type = type;
-        _cardData._target = target;
-        _cardData._baseDamage = baseDamage + ((float)_cardData._target * (.5f * baseDamage));
+        _cardData.Type = type;
+        _cardData.Target = target;
+        _cardData.BaseDamage = baseDamage + ((float)_cardData.Target * (.5f * baseDamage));
+        //TODO - Come up with how we want to determine stamina cost
+        _cardData.StaminaCost = staminaCost + ((float)_cardData.Target * (.5f * baseDamage));
         _image = gameObject.GetComponent<Image>();
         _image.sprite = Sprite.Create(
             _meleeTextures[(int)target + 1], 
