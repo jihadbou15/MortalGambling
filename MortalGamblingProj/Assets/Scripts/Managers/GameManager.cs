@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TurnManager _turnManager = null;
     [SerializeField] private TeamManager _teamManager = null;
 
+    private bool _hasToSwapPhase = false;
+
     void Start()
     {
         _inputManager.Initialize();
@@ -68,6 +70,11 @@ public class GameManager : MonoBehaviour
                 break;
             }
         }
+
+        if(_hasToSwapPhase)
+        {
+            _phaseManager.SwapPhase();
+        }
     }
 
     private void DoCardActivate(List<TeamManager.TeamChoiceData> readyTeams)
@@ -79,7 +86,7 @@ public class GameManager : MonoBehaviour
     {
         if(_phaseManager.GetAttackingTeamIdx() == teamId)
         {
-            _phaseManager.SwapPhase();
+            _hasToSwapPhase = true;
         }
     }
 }

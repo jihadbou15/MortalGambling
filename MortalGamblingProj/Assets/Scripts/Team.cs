@@ -28,6 +28,7 @@ public class Team : MonoBehaviour
             newPlayer.Initialize(i);
             newPlayer.OnActivate += DoCardActivate;
             newPlayer.OnPlayerHealthEmpty += OnPlayerHealthEmpty;
+            newPlayer.OnPlayerStaminaEmpty += OnPlayerStaminaEmpty;
             _players.Add(newPlayer);
             newPlayer.transform.SetParent(gameObject.transform);
         }        
