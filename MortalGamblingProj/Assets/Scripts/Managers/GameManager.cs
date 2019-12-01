@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private PhaseManager _phaseManager = null;
     [SerializeField] private TurnManager _turnManager = null;
     [SerializeField] private TeamManager _teamManager = null;
+    [SerializeField] private GameObject _endScreen = null;
 
     private bool _hasToSwapPhase = false;
 
@@ -19,6 +20,7 @@ public class GameManager : MonoBehaviour
         _teamManager.Initialize();
         _teamManager.OnCardActivate += DoCardActivate;
         _teamManager.OnStaminaEmpty += DoStaminaEmpty;
+        _teamManager.OnHealthEmpty += DoHealthEmpty;
 
         _phaseManager.Initialize(_teamManager.GetTeamAmount());
         _phaseManager.OnPhaseEnd += DoPhaseEnd;
@@ -28,6 +30,8 @@ public class GameManager : MonoBehaviour
 
         _teamManager.EnableTeamCardInput(true, _phaseManager.GetAttackingTeamIdx());
         _teamManager.EnableTeamCardInput(false, (_phaseManager.GetAttackingTeamIdx() - 1)*-1);
+
+        _endScreen.SetActive(false);
     }
 
     void Update()
@@ -88,5 +92,10 @@ public class GameManager : MonoBehaviour
         {
             _hasToSwapPhase = true;
         }
+    }
+
+    private void DoHealthEmpty(int teamId)
+    {
+        _endScreen.SetActive(true);
     }
 }

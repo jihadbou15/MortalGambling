@@ -21,8 +21,9 @@ public class TeamManager : MonoBehaviour
     public delegate void TeamManagerCardHandler(List<TeamChoiceData> teamChoices);
     public event TeamManagerCardHandler OnCardActivate;
 
-    public delegate void TeamManagerStaminaEmpty(int teamIdx);
-    public event TeamManagerStaminaEmpty OnStaminaEmpty;
+    public delegate void TeamManagerEmpty(int teamIdx);
+    public event TeamManagerEmpty OnStaminaEmpty;
+    public event TeamManagerEmpty OnHealthEmpty;
 
     [SerializeField] private int _teamAmount = 0;
     [SerializeField] private Team _teamPrefab = null;
@@ -41,6 +42,7 @@ public class TeamManager : MonoBehaviour
 
             newTeam.OnCardActivate += DoCardActivate;
             newTeam.OnTeamPlayerStaminaEmpty += DoTeamPlayerStaminaEmpty;
+            newTeam.OnTeamPlayerHealthEmpty += DoTeamPlayerHealthEmpty;
 
             newTeam.transform.SetParent(canvas.transform);
             newTeam.SetPosition(new Vector2(
@@ -91,6 +93,11 @@ public class TeamManager : MonoBehaviour
     public void DoTeamPlayerStaminaEmpty(int id)
     {
         OnStaminaEmpty?.Invoke(id);
+    }
+
+    public void DoTeamPlayerHealthEmpty(int id)
+    {
+        OnHealthEmpty?.Invoke(id);
     }
 
     public void EnableTeamCardInput(bool isEnabled, int idx)
