@@ -24,6 +24,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Slider _UIStamina = null;
     [SerializeField] private Transform _cardPosition =  null;
     [SerializeField] private Card _cardPrefab = null;
+    [SerializeField] private Item _itemPrefab = null;
     [SerializeField] private float _cardOffset = 0.0f;
     [SerializeField] private float _staminaRechargePercent = 0.0f;
     [SerializeField] private float _cardBaseDamage = 0.0f;
