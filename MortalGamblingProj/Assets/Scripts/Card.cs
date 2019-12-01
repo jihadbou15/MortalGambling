@@ -7,12 +7,6 @@ using UnityEngine.EventSystems;
 public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     //Enums
-    public enum Type
-    {
-        Melee,
-        Magic,
-        Item
-    }
     public enum Target : int
     {
         Head = 1,
@@ -21,35 +15,25 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     }
 
     //Variables
-    [System.Serializable]
-    public struct CardData
-    {
-        public Type Type;
-        public Target Target;
-        public float BaseDamage;
-        public float StaminaCost;
-    }
-
-    [SerializeField] private CardData _cardData;
+    [SerializeField] private Action _Action;
+    [SerializeField] private Target _Target;
     [SerializeField] private List<Texture2D> _meleeTextures = new List<Texture2D>();
     private Image _image;
     private bool _registeringInput;
 
     //Events
-    public delegate void Activate(CardData cardData);
+    public delegate void Activate(Action action);
     public event Activate OnActivate;
 
     public void Initialize(
-        Type type,
-        Target target,
-        float baseDamage, 
-        float staminaCost)
+        Action action,
+        Target target)
     {
-        _cardData.Type = type;
-        _cardData.Target = target;
-        _cardData.BaseDamage = baseDamage + ((float)_cardData.Target * (.5f * baseDamage));
+        _Action = action;
+        _Target = target;
+        _Action.Data.BaseDamage = action.Data.BaseDamage + ((float)_Target * (.5f * action.Data.BaseDamage));
         //TODO - Come up with how we want to determine stamina cost
-        _cardData.StaminaCost = staminaCost + ((float)_cardData.Target * (.5f * baseDamage));
+        _Action.Data.StaminaCost = action.Data.StaminaCost + ((float)_Target * (.5f * action.Data.StaminaCost));
         _image = gameObject.GetComponent<Image>();
         _image.sprite = Sprite.Create(
             _meleeTextures[(int)target + 1], 
@@ -65,7 +49,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if(_registeringInput) OnActivate.Invoke(_cardData);
+        if(_registeringInput) OnActivate.Invoke(_Action);
     }
 
     public void OnPointerEnter(PointerEventData eventData)

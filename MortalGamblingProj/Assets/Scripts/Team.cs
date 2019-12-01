@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Team : MonoBehaviour
 {
-    public delegate void TeamCardHandler(Card.CardData cardData, int id, int playerId);
+    public delegate void TeamCardHandler(Action action, int id, int playerId);
     public event TeamCardHandler OnCardActivate;
 
     public delegate void TeamPlayerEmpty(int teamId);
@@ -85,8 +85,8 @@ public class Team : MonoBehaviour
         }
     }
 
-    private void DoCardActivate(Card.CardData cardData, int playerId)
+    private void DoCardActivate(Action action, int playerId)
     {
-        OnCardActivate?.Invoke(cardData, _id, playerId);
+        OnCardActivate?.Invoke(action, _id, playerId);
     }
 }

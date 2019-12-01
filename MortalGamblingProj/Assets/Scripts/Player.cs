@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Player : MonoBehaviour
 {
     //Events
-    public delegate void Activate(Card.CardData cardData, int index);
+    public delegate void Activate(Action action, int index);
     public event Activate OnActivate;
 
     public delegate void PlayerEmpty();
@@ -36,7 +36,7 @@ public class Player : MonoBehaviour
         for(int i = 0; i < _cardAmount; i++)
         {
             Card newCard = GameObject.Instantiate(_cardPrefab);
-            newCard.Initialize(Card.Type.Melee, (Card.Target)i - 1, _cardBaseDamage, _cardBaseStaminaCost);
+            newCard.Initialize(new Action(Action.ActionType.Melee, _cardBaseDamage, _cardBaseStaminaCost), (Card.Target)i - 1);
             newCard.OnActivate += OnCardChosen;
             newCard.transform.SetPositionAndRotation(new Vector3(
                 _cardPosition.transform.position.x + (_cardOffset * (i - 1)), 
@@ -55,10 +55,10 @@ public class Player : MonoBehaviour
         if (_stamina <= 0) OnPlayerStaminaEmpty.Invoke();
     }
 
-    private void OnCardChosen(Card.CardData cardData)
+    private void OnCardChosen(Action action)
     {
         EnableCardInput(false);
-        OnActivate.Invoke(cardData, _index);
+        OnActivate.Invoke(action, _index);
     }
 
     public void OnTurnEnd()
