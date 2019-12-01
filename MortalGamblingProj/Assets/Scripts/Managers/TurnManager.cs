@@ -31,7 +31,7 @@ public class TurnManager : MonoBehaviour
         {
             defendingTeamIdx++;
         }
-        
+        Debug.Log("Attacker: " + attackingTeamIdx + ", defender: " + defendingTeamIdx);
         if(teamChoices[attackingTeamIdx].Action.Data.Type == Action.ActionType.Melee &&
             teamChoices[defendingTeamIdx].Action.Data.Type == Action.ActionType.Melee)
         {

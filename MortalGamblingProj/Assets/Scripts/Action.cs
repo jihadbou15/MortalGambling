@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class Action
 {
+    [System.Serializable]
     public enum ActionType
     {
         Melee,
@@ -11,6 +13,7 @@ public class Action
         Item
     }
 
+    [System.Serializable]
     public enum Target : int
     {
         Head = 1,
