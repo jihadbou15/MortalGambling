@@ -26,7 +26,6 @@ public class Player : MonoBehaviour
     [SerializeField] private Card _cardPrefab = null;
     [SerializeField] private float _cardOffset = 0.0f;
     [SerializeField] private float _staminaRechargePercent = 0.0f;
-    [SerializeField] private float _staminaBaseRechargePercent = 0.0f;
     [SerializeField] private float _cardBaseDamage = 0.0f;
     [SerializeField] private float _cardBaseStaminaCost = 0.0f;
 
@@ -99,15 +98,7 @@ public class Player : MonoBehaviour
 
     public void RechargeStamina()
     {
-        float staminaRecharge1 = _staminaBaseRechargePercent * 0.01f * _maxStamina;
-        float staminaRecharge2 = _staminaRechargePercent * 0.01f * _stamina;
-        if (staminaRecharge2 < staminaRecharge1)
-        {
-            DoStaminaChange(staminaRecharge1);
-            return;
-        }
-
-        DoStaminaChange(staminaRecharge2);
+        DoStaminaChange(_staminaRechargePercent * 0.01f * _maxStamina);
     }
 
     public void EnableCardInput(bool isEnabled)
