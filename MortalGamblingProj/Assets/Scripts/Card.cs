@@ -15,8 +15,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     }
 
     //Variables
-    [SerializeField] private Action _Action;
-    [SerializeField] private Target _Target;
+    [SerializeField] private Action _action;
     [SerializeField] private List<Texture2D> _meleeTextures = new List<Texture2D>();
     private Image _image;
     private bool _registeringInput;
@@ -26,18 +25,16 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     public event Activate OnActivate;
 
     public void Initialize(
-        Action action,
-        Target target)
+        Action action)
     {
-        _Action = action;
-        _Target = target;
-        _Action.Data.BaseDamage = action.Data.BaseDamage + ((float)_Target * (.5f * action.Data.BaseDamage));
+        _action = action;
+        _action.Data.BaseDamage = action.Data.BaseDamage + ((float)action.Data.Target * (.5f * action.Data.BaseDamage));
         //TODO - Come up with how we want to determine stamina cost
-        _Action.Data.StaminaCost = action.Data.StaminaCost + ((float)_Target * (.5f * action.Data.StaminaCost));
+        _action.Data.StaminaCost = action.Data.StaminaCost + ((float)action.Data.Target * (.5f * action.Data.StaminaCost));
         _image = gameObject.GetComponent<Image>();
         _image.sprite = Sprite.Create(
-            _meleeTextures[(int)target + 1], 
-            new Rect(0.0f, 0.0f, _meleeTextures[(int)target + 1].width, _meleeTextures[(int)target + 1].height), 
+            _meleeTextures[(int)action.Data.Target + 1], 
+            new Rect(0.0f, 0.0f, _meleeTextures[(int)action.Data.Target + 1].width, _meleeTextures[(int)action.Data.Target + 1].height), 
             new Vector2(0.5f, 0.5f));
         _registeringInput = false;
     }
@@ -49,7 +46,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if(_registeringInput) OnActivate.Invoke(_Action);
+        if(_registeringInput) OnActivate.Invoke(_action);
     }
 
     public void OnPointerEnter(PointerEventData eventData)

@@ -36,7 +36,7 @@ public class Player : MonoBehaviour
         for(int i = 0; i < _cardAmount; i++)
         {
             Card newCard = GameObject.Instantiate(_cardPrefab);
-            newCard.Initialize(new Action(Action.ActionType.Melee, _cardBaseDamage, _cardBaseStaminaCost), (Card.Target)i - 1);
+            newCard.Initialize(new Action(Action.ActionType.Melee, (Action.Target)i - 1, _cardBaseDamage, _cardBaseStaminaCost));
             newCard.OnActivate += OnCardChosen;
             newCard.transform.SetPositionAndRotation(new Vector3(
                 _cardPosition.transform.position.x + (_cardOffset * (i - 1)), 

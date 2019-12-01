@@ -6,14 +6,14 @@ public class TeamManager : MonoBehaviour
 {
     public struct TeamChoiceData
     {
-        public TeamChoiceData(Card.CardData cardData, int teamIdx, int playerIdx)
+        public TeamChoiceData(Action action, int teamIdx, int playerIdx)
         {
-            CardData = cardData;
+            Action = action;
             TeamIdx = teamIdx;
             PlayerIdx = playerIdx;
         }
 
-        public Card.CardData CardData;
+        public Action Action;
         public int TeamIdx;
         public int PlayerIdx;
     }
@@ -113,13 +113,13 @@ public class TeamManager : MonoBehaviour
         }
     }
 
-    private void DoCardActivate(Card.CardData target, int id, int playerId)
+    private void DoCardActivate(Action action, int id, int playerId)
     {
-        _teamChoices.Add(new TeamChoiceData( target, id, playerId));
+        _teamChoices.Add(new TeamChoiceData( action, id, playerId));
         _teams[(id - 1) * -1].EnableTeamCardInput(true);
         if(_teamChoices.Count == 1)
         {
-            _teams[id].ApplyStaminaChange(-target.StaminaCost, playerId);
+            _teams[id].ApplyStaminaChange(-action.Data.StaminaCost, playerId);
         }
     }
 }

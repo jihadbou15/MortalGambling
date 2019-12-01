@@ -32,10 +32,10 @@ public class TurnManager : MonoBehaviour
             defendingTeamIdx++;
         }
         
-        if(teamChoices[attackingTeamIdx].CardData.Type == Card.Type.Melee &&
-            teamChoices[defendingTeamIdx].CardData.Type == Card.Type.Melee)
+        if(teamChoices[attackingTeamIdx].Action.Data.Type == Action.ActionType.Melee &&
+            teamChoices[defendingTeamIdx].Action.Data.Type == Action.ActionType.Melee)
         {
-            int difference = Mathf.Abs((int)teamChoices[0].CardData.Target - (int)teamChoices[1].CardData.Target);
+            int difference = Mathf.Abs((int)teamChoices[0].Action.Data.Target - (int)teamChoices[1].Action.Data.Target);
 
             if (difference == 0)
             {
@@ -50,13 +50,13 @@ public class TurnManager : MonoBehaviour
                 OnTurnEnd?.Invoke(Outcome.Hit, teamChoices, defendingTeamIdx, attackingTeamIdx);
             }
         }
-        else if(teamChoices[attackingTeamIdx].CardData.Type == Card.Type.Magic &&
-            teamChoices[defendingTeamIdx].CardData.Type == Card.Type.Magic)
+        else if(teamChoices[attackingTeamIdx].Action.Data.Type == Action.ActionType.Magic &&
+            teamChoices[defendingTeamIdx].Action.Data.Type == Action.ActionType.Magic)
         {
 
         }
-        else if (teamChoices[attackingTeamIdx].CardData.Type == Card.Type.Item &&
-            teamChoices[defendingTeamIdx].CardData.Type == Card.Type.Item)
+        else if (teamChoices[attackingTeamIdx].Action.Data.Type == Action.ActionType.Item &&
+            teamChoices[defendingTeamIdx].Action.Data.Type == Action.ActionType.Item)
         {
 
         }
