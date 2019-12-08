@@ -62,26 +62,31 @@ public class GameManager : MonoBehaviour
 
     private void DoTurnEnd(TurnManager.Outcome outcome, List<TeamManager.TeamChoiceData> teamChoices, int defenderIdx, int attackerIdx)
     {
-        switch(outcome)
+        switch (outcome)
         {
             case TurnManager.Outcome.Parry:
-            {
-                _phaseManager.SwapPhase();
-                break;
-            }
+                {
+                    _phaseManager.SwapPhase();
+                    break;
+                }
             case TurnManager.Outcome.Defend:
-            {
-                _teamManager.ApplyTeamStaminaChange(defenderIdx, teamChoices[1].PlayerIdx, -(int)teamChoices[0].Action.Data.StaminaCost);
-                break;
-            }
+                {
+                    _teamManager.ApplyTeamStaminaChange(defenderIdx, teamChoices[1].PlayerIdx, -(int)teamChoices[0].Action.Data.StaminaCost);
+                    break;
+                }
             case TurnManager.Outcome.Hit:
-            {
-                _teamManager.ApplyTeamHealthChange(defenderIdx, teamChoices[1].PlayerIdx, -(int)teamChoices[0].Action.Data.BaseDamage);
-                break;
-            }
+                {
+                    _teamManager.ApplyTeamHealthChange(defenderIdx, teamChoices[1].PlayerIdx, -(int)teamChoices[0].Action.Data.BaseDamage);
+                    break;
+                }
+            case TurnManager.Outcome.ItemUse:
+                {
+                    _teamManager.ApplyTeamHealthChange
+                    break;
+                }
         }
 
-        if(_hasToSwapPhase)
+        if (_hasToSwapPhase)
         {
             _phaseManager.SwapPhase();
             _hasToSwapPhase = false;
