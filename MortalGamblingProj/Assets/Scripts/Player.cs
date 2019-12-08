@@ -24,7 +24,6 @@ public class Player : MonoBehaviour
     [SerializeField] private Slider _UIStamina = null;
     [SerializeField] private Transform _cardPosition =  null;
     [SerializeField] private Card _cardPrefab = null;
-    [SerializeField] private Item _itemPrefab = null;
     [SerializeField] private float _cardOffset = 0.0f;
     [SerializeField] private float _staminaRechargePercent = 0.0f;
     [SerializeField] private float _cardBaseDamage = 0.0f;
@@ -36,18 +35,24 @@ public class Player : MonoBehaviour
     {
         for(int i = 0; i < _cardAmount; i++)
         {
-            Card newCard = GameObject.Instantiate(_cardPrefab);
-            newCard.Initialize(new Action(Action.ActionType.Melee, (Action.Target)i - 1, _cardBaseDamage, _cardBaseStaminaCost));
-            newCard.OnActivate += OnCardChosen;
-            newCard.transform.SetPositionAndRotation(new Vector3(
-                _cardPosition.transform.position.x + (_cardOffset * (i - 1)), 
-                _cardPosition.transform.position.y, 0),
-                newCard.transform.rotation);
-            _cards.Add(newCard);
-            newCard.transform.SetParent(gameObject.transform);
+            CreateCard(i);
         }
+
         Reset();
         _index = index;
+    }
+
+    private void CreateCard(int i)
+    {
+        Card newCard = GameObject.Instantiate(_cardPrefab);
+        newCard.Initialize(new Action(Action.ActionType.Melee, (Action.Target)i - 1, _cardBaseDamage, _cardBaseStaminaCost));
+        newCard.OnActivate += OnCardChosen;
+        newCard.transform.SetPositionAndRotation(new Vector3(
+            _cardPosition.transform.position.x + (_cardOffset * (i - 1)),
+            _cardPosition.transform.position.y, 0),
+            newCard.transform.rotation);
+        _cards.Add(newCard);
+        newCard.transform.SetParent(gameObject.transform);
     }
 
     public void Tick()

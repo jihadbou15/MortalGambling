@@ -21,6 +21,7 @@ public class Action
         Legs = -1,
     }
 
+
     [System.Serializable]
     public struct ActionData
     {

@@ -8,7 +8,8 @@ public class TurnManager : MonoBehaviour
     {
         Parry,
         Defend,
-        Hit
+        Hit,
+        ItemUse
     }
 
     public delegate void TurnHandler(Outcome outcome, List<TeamManager.TeamChoiceData> teamChoices, int defenderIdx, int attackerIdx);
