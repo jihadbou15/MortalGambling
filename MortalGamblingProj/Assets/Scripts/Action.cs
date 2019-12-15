@@ -25,17 +25,17 @@ public class Action
     [System.Serializable]
     public struct ActionData
     {
-        public ActionType Type;
         public Target Target;
         public float BaseDamage;
         public float StaminaCost;
     }
 
-    [SerializeField] public ActionData Data;
+    public ActionType Type;
+    public ActionData Data;
 
     public Action(ActionType type, Target target, float baseDamage, float staminaCost)
     {
-        Data.Type = type;
+        Type = type;
         Data.Target = target;
         Data.BaseDamage = baseDamage;
         Data.StaminaCost = staminaCost;

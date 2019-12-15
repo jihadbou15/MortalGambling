@@ -33,8 +33,8 @@ public class TurnManager : MonoBehaviour
             defendingTeamIdx++;
         }
         Debug.Log("Attacker: " + attackingTeamIdx + ", defender: " + defendingTeamIdx);
-        if(teamChoices[attackingTeamIdx].Action.Data.Type == Action.ActionType.Melee &&
-            teamChoices[defendingTeamIdx].Action.Data.Type == Action.ActionType.Melee)
+        if(teamChoices[attackingTeamIdx].Action.Type == Action.ActionType.Melee &&
+            teamChoices[defendingTeamIdx].Action.Type == Action.ActionType.Melee)
         {
             int difference = Mathf.Abs((int)teamChoices[0].Action.Data.Target - (int)teamChoices[1].Action.Data.Target);
 
@@ -51,13 +51,13 @@ public class TurnManager : MonoBehaviour
                 OnTurnEnd?.Invoke(Outcome.Hit, teamChoices, defendingTeamIdx, attackingTeamIdx);
             }
         }
-        else if(teamChoices[attackingTeamIdx].Action.Data.Type == Action.ActionType.Magic &&
-            teamChoices[defendingTeamIdx].Action.Data.Type == Action.ActionType.Magic)
+        else if(teamChoices[attackingTeamIdx].Action.Type == Action.ActionType.Magic &&
+            teamChoices[defendingTeamIdx].Action.Type == Action.ActionType.Magic)
         {
 
         }
-        else if (teamChoices[attackingTeamIdx].Action.Data.Type == Action.ActionType.Item &&
-            teamChoices[defendingTeamIdx].Action.Data.Type == Action.ActionType.Item)
+        else if (teamChoices[attackingTeamIdx].Action.Type == Action.ActionType.Item &&
+            teamChoices[defendingTeamIdx].Action.Type == Action.ActionType.Item)
         {
 
         }

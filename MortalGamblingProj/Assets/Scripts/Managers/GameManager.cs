@@ -79,11 +79,6 @@ public class GameManager : MonoBehaviour
                     _teamManager.ApplyTeamHealthChange(defenderIdx, teamChoices[1].PlayerIdx, -(int)teamChoices[0].Action.Data.BaseDamage);
                     break;
                 }
-            case TurnManager.Outcome.ItemUse:
-                {
-                    _teamManager.ApplyTeamHealthChange
-                    break;
-                }
         }
 
         if (_hasToSwapPhase)
