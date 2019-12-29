@@ -10,11 +10,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TeamManager _teamManager = null;
     [SerializeField] private GameObject _endScreen = null;
 
+    private int _enabledTeamID = -1;
     private bool _hasToSwapPhase = false;
     private bool _hasEnded = false;
 
     void Start()
     {
+        //Initialize all managers
         _inputManager.Initialize();
         _inputManager.KeyDown += OnKeyDown;
 
@@ -23,14 +25,17 @@ public class GameManager : MonoBehaviour
         _teamManager.OnStaminaEmpty += DoStaminaEmpty;
         _teamManager.OnHealthEmpty += DoHealthEmpty;
 
-        _phaseManager.Initialize(_teamManager.GetTeamAmount());
+        int teamAmount = _teamManager.GetTeamAmount();
+
+        _phaseManager.Initialize(teamAmount);
         _phaseManager.OnPhaseEnd += DoPhaseEnd;
 
-        _turnManager.Initialize();
+        _turnManager.Initialize(teamAmount);
         _turnManager.OnTurnEnd += DoTurnEnd;
+        _turnManager.OnTurnResolve += DoTurnResolve;
 
-        _teamManager.EnableTeamCardInput(true, _phaseManager.GetAttackingTeamIdx());
-        _teamManager.EnableTeamCardInput(false, (_phaseManager.GetAttackingTeamIdx() - 1)*-1);
+        //Initialize Phase Setup
+        PhaseSetup();
 
         _endScreen.SetActive(false);
     }
@@ -48,6 +53,30 @@ public class GameManager : MonoBehaviour
         _teamManager.Tick();
     }
 
+    void PhaseSetup()
+    {
+        int attackingTeamId = _phaseManager.GetAttackingTeamIdx();
+        for (int i = 0; i < _teamManager.GetTeamAmount(); ++i)
+        {
+            bool enable = false;
+            if (i == attackingTeamId)
+            {
+                enable = true;
+                _enabledTeamID = i;
+            }
+            _teamManager.EnableTeamCardInput(enable, i);
+        }
+
+        _turnManager.SetActionAmount(_teamManager.GetPlayerAmount(attackingTeamId));
+    }
+
+    void SwapPhase()
+    {
+        _turnManager.ResetTurns();
+        _phaseManager.SwapPhase();
+        _hasToSwapPhase = false;
+    }
+
     private void OnKeyDown(KeyCode keyCode)
     {
         //Check for input here
@@ -55,42 +84,64 @@ public class GameManager : MonoBehaviour
 
     private void DoPhaseEnd()
     {
-        _teamManager.EnableTeamCardInput(true, _phaseManager.GetAttackingTeamIdx());
-        _teamManager.EnableTeamCardInput(false, (_phaseManager.GetAttackingTeamIdx() - 1) * -1);
+        PhaseSetup();
         _teamManager.RechargeEveryoneStamina();
     }
 
-    private void DoTurnEnd(TurnManager.Outcome outcome, List<TeamManager.TeamChoiceData> teamChoices, int defenderIdx, int attackerIdx)
+    private void DoTurnEnd()
+    {
+        int activeID = _phaseManager.GetAttackingTeamIdx();
+        int teamAmount = _teamManager.GetTeamAmount();
+
+        activeID += _turnManager.GetTeamCounter();
+        if(activeID >= teamAmount)
+        {
+            activeID = 0;
+        }
+
+        _teamManager.EnableTeamCardInput(false, _enabledTeamID);
+        _teamManager.EnableTeamCardInput(true, activeID);
+        _enabledTeamID = activeID;
+    }
+
+    private void DoTurnResolve(TurnManager.Outcome outcome, TeamManager.ActionData attackerAction, TeamManager.ActionData defenderAction)
     {
         switch (outcome)
         {
             case TurnManager.Outcome.Parry:
-                {
-                    _phaseManager.SwapPhase();
-                    break;
-                }
+            {
+                Melee attackerMeleeAction = (Melee)attackerAction.Action;
+                _teamManager.ApplyTeamStaminaChange(attackerAction.TeamID, attackerAction.PlayerID, -(int)attackerMeleeAction.StaminaCost);
+                SwapPhase();
+                break;
+            }
             case TurnManager.Outcome.Defend:
-                {
-                    _teamManager.ApplyTeamStaminaChange(defenderIdx, teamChoices[1].PlayerIdx, -(int)teamChoices[0].Action.Data.StaminaCost);
-                    break;
-                }
+            {
+                Melee attackerMeleeAction = (Melee)attackerAction.Action;
+                _teamManager.ApplyTeamStaminaChange(defenderAction.TeamID, defenderAction.PlayerID, -(int)attackerMeleeAction.StaminaCost);
+                _teamManager.ApplyTeamStaminaChange(attackerAction.TeamID, attackerAction.PlayerID, -(int)attackerMeleeAction.StaminaCost);
+                PhaseSetup();
+                break;
+            }
             case TurnManager.Outcome.Hit:
-                {
-                    _teamManager.ApplyTeamHealthChange(defenderIdx, teamChoices[1].PlayerIdx, -(int)teamChoices[0].Action.Data.BaseDamage);
-                    break;
-                }
+            {
+                Melee attackerMeleeAction = (Melee)attackerAction.Action;
+                _teamManager.ApplyTeamHealthChange(defenderAction.TeamID, defenderAction.PlayerID, -(int)attackerMeleeAction.StaminaCost);
+                _teamManager.ApplyTeamStaminaChange(attackerAction.TeamID, attackerAction.PlayerID, -(int)attackerMeleeAction.StaminaCost);
+                PhaseSetup();
+                break;
+            }
         }
 
         if (_hasToSwapPhase)
         {
-            _phaseManager.SwapPhase();
-            _hasToSwapPhase = false;
+            SwapPhase();
         }
     }
 
-    private void DoCardActivate(List<TeamManager.TeamChoiceData> readyTeams)
+    private void DoCardActivate(TeamManager.ActionData actionData)
     {
-        _turnManager.ResolveTeams(readyTeams, _phaseManager.GetAttackingTeamIdx());
+        _turnManager.AddToResolver(actionData);
     }
 
     private void DoStaminaEmpty(int teamId)

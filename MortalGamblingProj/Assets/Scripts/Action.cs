@@ -1,43 +1,47 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-[System.Serializable]
-public class Action
+
+public class Action : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [System.Serializable]
     public enum ActionType
     {
-        Melee,
-        Magic,
-        Item
+        MELEE,
+        MAGIC,
+        ITEM,
+        NONE
     }
 
-    [System.Serializable]
-    public enum Target : int
+    public ActionType Type = ActionType.NONE;
+
+    public delegate void ActionCallback(Action action);
+    public event ActionCallback OnActivate;
+
+    [SerializeField] protected Image _image = null;
+    private bool _isRegisteringInput = false;
+
+    public void OnPointerClick(PointerEventData eventData)
     {
-        Head = 1,
-        Body = 0,
-        Legs = -1,
+        if (_isRegisteringInput) OnActivate.Invoke(this);
     }
 
-
-    [System.Serializable]
-    public struct ActionData
+    public void OnPointerEnter(PointerEventData eventData)
     {
-        public Target Target;
-        public float BaseDamage;
-        public float StaminaCost;
+        if (_isRegisteringInput) _image.color = Color.blue;
     }
 
-    public ActionType Type;
-    public ActionData Data;
-
-    public Action(ActionType type, Target target, float baseDamage, float staminaCost)
+    public void OnPointerExit(PointerEventData eventData)
     {
-        Type = type;
-        Data.Target = target;
-        Data.BaseDamage = baseDamage;
-        Data.StaminaCost = staminaCost;
+        if (_isRegisteringInput) _image.color = Color.red;
+    }
+
+    public void SetRegisteringInput(bool isRegisteringInput)
+    {
+        _isRegisteringInput = isRegisteringInput;
+        _image.color = Color.red;
     }
 }

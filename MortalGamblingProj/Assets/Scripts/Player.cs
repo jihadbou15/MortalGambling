@@ -6,53 +6,53 @@ using UnityEngine.UI;
 public class Player : MonoBehaviour
 {
     //Events
-    public delegate void Activate(Action action, int index);
+    public delegate void Activate(Action action, int playerId);
     public event Activate OnActivate;
 
     public delegate void PlayerEmpty();
     public event PlayerEmpty OnPlayerHealthEmpty;
     public event PlayerEmpty OnPlayerStaminaEmpty;
 
-    //Variables
-    private float _health;
+    //Player variables
     [SerializeField] private float _maxHealth = 100;
-    private float _stamina;
     [SerializeField] private float _maxStamina = 100;
-    private List<Card> _cards = new List<Card>();
-    [SerializeField] private int _cardAmount = 3;
     [SerializeField] private Slider _UIHealth = null;
     [SerializeField] private Slider _UIStamina = null;
-    [SerializeField] private Transform _cardPosition =  null;
-    [SerializeField] private Card _cardPrefab = null;
-    [SerializeField] private float _cardOffset = 0.0f;
     [SerializeField] private float _staminaRechargePercent = 0.0f;
-    [SerializeField] private float _cardBaseDamage = 0.0f;
-    [SerializeField] private float _cardBaseStaminaCost = 0.0f;
 
-    private int _index = -1;
+    private int _id = -1;
+    private float _health;
+    private float _stamina;
+
+    //Melee variables
+    [SerializeField] private int _meleeAmount = 3;
+    [SerializeField] private Transform _meleePosition =  null;
+    [SerializeField] private Melee _meleePrefab = null;
+    [SerializeField] private float _meleeOffset = 0.0f;
+    [SerializeField] private float _meleeBaseDamage = 0.0f;
+    [SerializeField] private float _meleeBaseStaminaCost = 0.0f;
+    [SerializeField] private List<Sprite> _meleeSprites = new List<Sprite>();
+
+    private List<Melee> _meleeActions = new List<Melee>();
 
     public void Initialize(int index)
     {
-        for(int i = 0; i < _cardAmount; i++)
+        for(int i = 0; i < _meleeAmount; i++)
         {
-            CreateCard(Action.ActionType.Melee,i);
+            CreateMelee((Melee.Target)(i - 1), _meleeSprites[i], (i - 1) * _meleeOffset);
         }
-        CreateCard(Action.ActionType.Item, 2);
         Reset();
-        _index = index;
+        _id = index;
     }
 
-    private void CreateCard(Action.ActionType type ,int i)
+    private void CreateMelee(Melee.Target meleeTarget, Sprite meleeSprite, float offset)
     {
-        Card newCard = GameObject.Instantiate(_cardPrefab);
-        newCard.Initialize(new Action(type, (Action.Target)i - 1, _cardBaseDamage, _cardBaseStaminaCost));
-        newCard.OnActivate += OnCardChosen;
-        newCard.transform.SetPositionAndRotation(new Vector3(
-            _cardPosition.transform.position.x + (_cardOffset * (i - 1)),
-            _cardPosition.transform.position.y, 0),
-            newCard.transform.rotation);
-        _cards.Add(newCard);
-        newCard.transform.SetParent(gameObject.transform);
+        Melee newMelee = Instantiate(_meleePrefab);
+        newMelee.Initialize(meleeSprite, meleeTarget, _meleeBaseDamage, _meleeBaseStaminaCost);
+        newMelee.OnActivate += OnCardChosen;
+        newMelee.transform.position = _meleePosition.position + new Vector3(offset, 0, 0);
+        newMelee.transform.SetParent(transform);
+        _meleeActions.Add(newMelee);
     }
 
     public void Tick()
@@ -63,8 +63,7 @@ public class Player : MonoBehaviour
 
     private void OnCardChosen(Action action)
     {
-        EnableCardInput(false);
-        OnActivate.Invoke(action, _index);
+        OnActivate.Invoke(action, _id);
     }
 
     public void OnTurnEnd()
@@ -109,9 +108,9 @@ public class Player : MonoBehaviour
 
     public void EnableCardInput(bool isEnabled)
     {
-        foreach (Card card in _cards)
+        foreach (Melee melee in _meleeActions)
         {
-            card.SetRegisteringInput(isEnabled);
+            melee.SetRegisteringInput(isEnabled);
         }
     }
 

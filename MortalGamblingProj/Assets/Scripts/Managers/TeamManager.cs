@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class TeamManager : MonoBehaviour
 {
-    public struct TeamChoiceData
+    public struct ActionData
     {
-        public TeamChoiceData(Action action, int teamIdx, int playerIdx)
+        public Action Action;
+        public int TeamID;
+        public int PlayerID;
+
+        public ActionData(Action action, int teamID, int playerID)
         {
             Action = action;
-            TeamIdx = teamIdx;
-            PlayerIdx = playerIdx;
+            TeamID = teamID;
+            PlayerID = playerID;
         }
-
-        public Action Action;
-        public int TeamIdx;
-        public int PlayerIdx;
     }
 
-    public delegate void TeamManagerCardHandler(List<TeamChoiceData> teamChoices);
+    public delegate void TeamManagerCardHandler(ActionData actionData);
     public event TeamManagerCardHandler OnCardActivate;
 
     public delegate void TeamManagerEmpty(int teamIdx);
@@ -29,8 +29,6 @@ public class TeamManager : MonoBehaviour
     [SerializeField] private Team _teamPrefab = null;
     [SerializeField] private float _teamOffset = 0.0f;
     private List<Team> _teams = new List<Team>();
-
-    private List<TeamChoiceData> _teamChoices = new List<TeamChoiceData>();
 
     public void Initialize()
     {
@@ -59,17 +57,16 @@ public class TeamManager : MonoBehaviour
         {
             team.Tick();
         }
-
-        if(_teamChoices.Count >= _teamAmount)
-        {
-            OnCardActivate?.Invoke(_teamChoices);
-            _teamChoices.Clear();
-        }
     }
 
     public int GetTeamAmount()
     {
         return _teamAmount;
+    }
+
+    public int GetPlayerAmount(int teamId)
+    {
+        return _teams[teamId].GetPlayerAmount();
     }
 
     public void ApplyTeamHealthChange(int teamIdx, int playerIdx, int healthChange)
@@ -113,13 +110,8 @@ public class TeamManager : MonoBehaviour
         }
     }
 
-    private void DoCardActivate(Action action, int id, int playerId)
+    private void DoCardActivate(Action action, int teamId, int playerId)
     {
-        _teamChoices.Add(new TeamChoiceData( action, id, playerId));
-        _teams[(id - 1) * -1].EnableTeamCardInput(true);
-        if(_teamChoices.Count == 1)
-        {
-            _teams[id].ApplyStaminaChange(-action.Data.StaminaCost, playerId);
-        }
+        OnCardActivate?.Invoke(new ActionData(action, teamId, playerId));
     }
 }

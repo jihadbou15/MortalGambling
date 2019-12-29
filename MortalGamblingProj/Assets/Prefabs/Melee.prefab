@@ -86,11 +86,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecdd02078d1b40f418c470f60288f291, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cardData:
-    _type: 0
-    _target: 0
-    _baseDamage: 0
-  _meleeTextures:
-  - {fileID: 2800000, guid: a779798af677cdc4d9c7b5c5dd0c8332, type: 3}
-  - {fileID: 2800000, guid: bd2e4689a043a04468c45777a7b46dd7, type: 3}
-  - {fileID: 2800000, guid: 0a9a5a2df900bbc4ba7457631ca676b7, type: 3}
+  Type: 0
+  _image: {fileID: 1867859445554711291}
+  _target: 2
+  _baseDamage: 0
+  _staminaCost: 0

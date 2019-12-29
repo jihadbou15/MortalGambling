@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Team : MonoBehaviour
 {
-    public delegate void TeamCardHandler(Action action, int id, int playerId);
+    public delegate void TeamCardHandler(Action action, int teamId, int playerId);
     public event TeamCardHandler OnCardActivate;
 
     public delegate void TeamPlayerEmpty(int teamId);
@@ -75,6 +75,11 @@ public class Team : MonoBehaviour
     public void SetRotation(float angle)
     {
         _rectTransform.Rotate(new Vector3(0, 0, angle));
+    }
+
+    public int GetPlayerAmount()
+    {
+        return _playerAmount;
     }
 
     public void EnableTeamCardInput(bool isEnabled)
