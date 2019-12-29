@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
     {
         //Initialize all managers
         _inputManager.Initialize();
-        _inputManager.KeyDown += OnKeyDown;
+        _inputManager.OnKeyDown += DoKeyDown;
 
         _teamManager.Initialize();
         _teamManager.OnCardActivate += DoCardActivate;
@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour
 
         _turnManager.Initialize(teamAmount);
         _turnManager.OnTurnEnd += DoTurnEnd;
-        _turnManager.OnTurnResolve += DoTurnResolve;
+        _turnManager.OnApplyTurnOutcome += DoApplyTurnOutcome;
 
         //Initialize Phase Setup
         PhaseSetup();
@@ -77,7 +77,7 @@ public class GameManager : MonoBehaviour
         _hasToSwapPhase = false;
     }
 
-    private void OnKeyDown(KeyCode keyCode)
+    private void DoKeyDown(KeyCode keyCode)
     {
         //Check for input here
     }
@@ -104,30 +104,29 @@ public class GameManager : MonoBehaviour
         _enabledTeamID = activeID;
     }
 
-    private void DoTurnResolve(TurnManager.Outcome outcome, TeamManager.ActionData attackerAction, TeamManager.ActionData defenderAction)
+    private void DoApplyTurnOutcome(TurnManager.Outcome outcome, TeamManager.ActionData attackerAction, TeamManager.ActionData defenderAction)
     {
+        Melee attackerMeleeAction = (Melee)attackerAction.Action;
+
         switch (outcome)
         {
             case TurnManager.Outcome.Parry:
             {
-                Melee attackerMeleeAction = (Melee)attackerAction.Action;
                 _teamManager.ApplyTeamStaminaChange(attackerAction.TeamID, attackerAction.PlayerID, -(int)attackerMeleeAction.StaminaCost);
                 SwapPhase();
                 break;
             }
             case TurnManager.Outcome.Defend:
             {
-                Melee attackerMeleeAction = (Melee)attackerAction.Action;
-                _teamManager.ApplyTeamStaminaChange(defenderAction.TeamID, defenderAction.PlayerID, -(int)attackerMeleeAction.StaminaCost);
                 _teamManager.ApplyTeamStaminaChange(attackerAction.TeamID, attackerAction.PlayerID, -(int)attackerMeleeAction.StaminaCost);
+                _teamManager.ApplyTeamStaminaChange(defenderAction.TeamID, defenderAction.PlayerID, -(int)attackerMeleeAction.StaminaCost);
                 PhaseSetup();
                 break;
             }
             case TurnManager.Outcome.Hit:
             {
-                Melee attackerMeleeAction = (Melee)attackerAction.Action;
-                _teamManager.ApplyTeamHealthChange(defenderAction.TeamID, defenderAction.PlayerID, -(int)attackerMeleeAction.StaminaCost);
                 _teamManager.ApplyTeamStaminaChange(attackerAction.TeamID, attackerAction.PlayerID, -(int)attackerMeleeAction.StaminaCost);
+                _teamManager.ApplyTeamHealthChange(defenderAction.TeamID, defenderAction.PlayerID, -(int)attackerMeleeAction.StaminaCost);
                 PhaseSetup();
                 break;
             }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class InputManager : MonoBehaviour
 {
     public delegate void InputHandler(KeyCode keyCode);
-    public event InputHandler KeyDown;
+    public event InputHandler OnKeyDown;
 
     [SerializeField] private List<KeyCode> _keyCodes = new List<KeyCode>();
     public void Initialize()
@@ -19,7 +19,7 @@ public class InputManager : MonoBehaviour
         {
             if(Input.GetKeyDown(keyCode))
             {
-                KeyDown?.Invoke(keyCode);
+                OnKeyDown?.Invoke(keyCode);
             }
         }
     }

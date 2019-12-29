@@ -17,7 +17,7 @@ public class TurnManager : MonoBehaviour
     public event TurnHandler OnTurnEnd;
 
     public delegate void TurnResolverHandler(Outcome outcome, TeamManager.ActionData attackerAction, TeamManager.ActionData defenderAction);
-    public event TurnResolverHandler OnTurnResolve;
+    public event TurnResolverHandler OnApplyTurnOutcome;
 
     private List<TeamManager.ActionData> _attackerActions = new List<TeamManager.ActionData>();
     private List<TeamManager.ActionData> _defenderActions = new List<TeamManager.ActionData>();
@@ -104,15 +104,15 @@ public class TurnManager : MonoBehaviour
 
             if (difference == 0)
             {
-                OnTurnResolve?.Invoke(Outcome.Parry, _attackerActions[0], _defenderActions[0]);
+                OnApplyTurnOutcome?.Invoke(Outcome.Parry, _attackerActions[0], _defenderActions[0]);
             }
             else if (difference == 1)
             {
-                OnTurnResolve?.Invoke(Outcome.Defend, _attackerActions[0], _defenderActions[0]);
+                OnApplyTurnOutcome?.Invoke(Outcome.Defend, _attackerActions[0], _defenderActions[0]);
             }
             else if (difference == 2)
             {
-                OnTurnResolve?.Invoke(Outcome.Hit, _attackerActions[0], _defenderActions[0]);
+                OnApplyTurnOutcome?.Invoke(Outcome.Hit, _attackerActions[0], _defenderActions[0]);
             }
         }
         else if (_attackerActions[0].Action.Type == Action.ActionType.MAGIC &&
