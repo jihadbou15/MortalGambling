@@ -13,6 +13,45 @@ public class TurnManager : MonoBehaviour
         ItemUse
     }
 
+    [System.Serializable]
+    struct MeleeResolver
+    {
+        public Outcome GetOutcome(Melee.Target attackerTarget, Melee.Target defenderTarget)
+        {
+            MeleeAttack found = MeleeAttacks.Find((MeleeAttack meleeAttack) => 
+            {
+                return meleeAttack.Attacks == attackerTarget;
+            });
+
+            return found.GetOutcome(defenderTarget);
+        }
+
+        public List<MeleeAttack> MeleeAttacks;
+    }
+
+    [System.Serializable]
+    struct MeleeAttack
+    {
+        public Outcome GetOutcome(Melee.Target defenderTarget)
+        {
+            if(defenderTarget == GetsParriedBy)
+            {
+                return Outcome.Parry;
+            }
+            else if(defenderTarget == GetsHitOn)
+            {
+                return Outcome.Hit;
+            }
+            return Outcome.Defend;
+        }
+
+        public Melee.Target Attacks;
+        public Melee.Target GetsParriedBy;
+        public Melee.Target GetsHitOn;
+    }
+
+    [SerializeField] private MeleeResolver _resolver;
+
     public delegate void TurnHandler();
     public event TurnHandler OnTurnEnd;
 
@@ -95,35 +134,32 @@ public class TurnManager : MonoBehaviour
 
     public void ResolveTeams()
     {
-        if(_attackerActions[0].Action.Type == Action.ActionType.MELEE &&
-            _defenderActions[0].Action.Type == Action.ActionType.MELEE)
-        {
-            Melee melee1 = (Melee)_attackerActions[0].Action;
-            Melee melee2 = (Melee)_defenderActions[0].Action;
-            int difference = Mathf.Abs((int)melee1.MeleeTarget - (int)melee2.MeleeTarget);
+        var attackerType = _attackerActions[0].Action.Type;
+        var defenderType = _defenderActions[0].Action.Type;
 
-            if (difference == 0)
-            {
-                OnApplyTurnOutcome?.Invoke(Outcome.Parry, _attackerActions[0], _defenderActions[0]);
-            }
-            else if (difference == 1)
-            {
-                OnApplyTurnOutcome?.Invoke(Outcome.Defend, _attackerActions[0], _defenderActions[0]);
-            }
-            else if (difference == 2)
-            {
-                OnApplyTurnOutcome?.Invoke(Outcome.Hit, _attackerActions[0], _defenderActions[0]);
-            }
+        if (attackerType == Action.ActionType.MELEE &&
+            defenderType == Action.ActionType.MELEE)
+        {
+            ResolveMelee();
         }
-        else if (_attackerActions[0].Action.Type == Action.ActionType.MAGIC &&
-            _attackerActions[0].Action.Type == Action.ActionType.MAGIC)
+        else if (attackerType == Action.ActionType.MAGIC &&
+                defenderType == Action.ActionType.MAGIC)
         {
 
         }
-        else if (_attackerActions[0].Action.Type == Action.ActionType.ITEM &&
-            _attackerActions[0].Action.Type == Action.ActionType.ITEM)
+        else
         {
 
         }
+    }
+
+    public void ResolveMelee()
+    {
+        Melee.Target attackerTarget = ((Melee)_attackerActions[0].Action).MeleeTarget;
+        Melee.Target defenderTarget = ((Melee)_defenderActions[0].Action).MeleeTarget;
+
+        Outcome outcome = _resolver.GetOutcome(attackerTarget, defenderTarget);
+
+        OnApplyTurnOutcome?.Invoke(outcome, _attackerActions[0], _defenderActions[0]);
     }
 }
