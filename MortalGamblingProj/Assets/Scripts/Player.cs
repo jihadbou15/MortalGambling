@@ -33,6 +33,9 @@ public class Player : MonoBehaviour
     [SerializeField] private float _meleeBaseStaminaCost = 0.0f;
     [SerializeField] private List<Sprite> _meleeSprites = new List<Sprite>();
 
+    //Item variables
+    [SerializeField] private Item _itemPrefab = null;
+
     private List<Melee> _meleeActions = new List<Melee>();
 
     public void Initialize(int index)

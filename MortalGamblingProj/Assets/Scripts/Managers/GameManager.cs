@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
@@ -107,7 +105,7 @@ public class GameManager : MonoBehaviour
     private void DoApplyTurnOutcome(TurnManager.Outcome outcome, TeamManager.ActionData attackerAction, TeamManager.ActionData defenderAction)
     {
         Melee attackerMeleeAction = (Melee)attackerAction.Action;
-
+        
         switch (outcome)
         {
             case TurnManager.Outcome.Parry:
@@ -127,6 +125,23 @@ public class GameManager : MonoBehaviour
             {
                 _teamManager.ApplyTeamStaminaChange(attackerAction.TeamID, attackerAction.PlayerID, -(int)attackerMeleeAction.StaminaCost);
                 _teamManager.ApplyTeamHealthChange(defenderAction.TeamID, defenderAction.PlayerID, -(int)attackerMeleeAction.StaminaCost);
+                PhaseSetup();
+                break;
+            }
+            case TurnManager.Outcome.ItemUse:
+            {
+                    if (attackerAction.Action.Type == Action.ActionType.ITEM)
+                    {
+                        Item attackerItemAction = (Item)attackerAction.Action;
+                        _teamManager.ApplyTeamHealthChange(attackerAction.TeamID, attackerAction.PlayerID, attackerItemAction.HealthEffect);
+                        _teamManager.ApplyTeamStaminaChange(attackerAction.TeamID, attackerAction.PlayerID, attackerItemAction.StaminaEffect);
+                        //Process debuff
+                    }
+                    if (defenderAction.Action.Type == Action.ActionType.ITEM)
+                    {
+                        Item defenderItemAction = (Item)defenderAction.Action;
+
+                    }
                 PhaseSetup();
                 break;
             }

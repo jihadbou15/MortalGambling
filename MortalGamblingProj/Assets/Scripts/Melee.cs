@@ -28,9 +28,4 @@ public class Melee : Action
         Damage = baseDamage + ((int)meleeTarget * 0.5f * baseDamage);
         StaminaCost = baseStaminaCost + ((int)meleeTarget * 0.5f * baseStaminaCost);
     }
-
-    public void Tick()
-    {
-
-    }
 }
