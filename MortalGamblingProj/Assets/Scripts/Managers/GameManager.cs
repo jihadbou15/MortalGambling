@@ -136,10 +136,15 @@ public class GameManager : MonoBehaviour
                         _teamManager.ApplyTeamHealthChange(attackerAction.TeamID, attackerAction.PlayerID, attackerItemAction.HealthEffect);
                         _teamManager.ApplyTeamStaminaChange(attackerAction.TeamID, attackerAction.PlayerID, attackerItemAction.StaminaEffect);
                         //Process debuff
+                        _teamManager.ApplyTeamDebuff(attackerAction.TeamID, attackerAction.PlayerID, attackerItemAction.DebuffEffect);
                     }
                     if (defenderAction.Action.Type == Action.ActionType.ITEM)
                     {
                         Item defenderItemAction = (Item)defenderAction.Action;
+                        _teamManager.ApplyTeamHealthChange(defenderAction.TeamID, defenderAction.PlayerID, defenderItemAction.HealthEffect);
+                        _teamManager.ApplyTeamStaminaChange(defenderAction.TeamID, defenderAction.PlayerID, defenderItemAction.StaminaEffect);
+                        //Process debuff
+                        _teamManager.ApplyTeamDebuff(defenderAction.TeamID, defenderAction.PlayerID, defenderItemAction.DebuffEffect);
 
                     }
                 PhaseSetup();

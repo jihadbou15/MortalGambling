@@ -5,6 +5,16 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
+    public enum Debuff : int
+    {
+        NONE = -2,
+        CANNOTLEGS,
+        CANNOTBODY,
+        CANNOTHEAD,
+        NOHEALING,
+        NOSTAMINAREGEN,        
+    }
+
     //Events
     public delegate void Activate(Action action, int playerId);
     public event Activate OnActivate;
@@ -23,6 +33,7 @@ public class Player : MonoBehaviour
     private int _id = -1;
     private float _health;
     private float _stamina;
+    private Debuff _debuff;
 
     //Melee variables
     [SerializeField] private int _meleeAmount = 3;
@@ -76,6 +87,7 @@ public class Player : MonoBehaviour
 
     public void DoHealthChange(float healthChange)
     {
+        if (_debuff == Debuff.NOHEALING) return;
         _health += healthChange;
         if(_health > _maxHealth)
         {
@@ -91,6 +103,7 @@ public class Player : MonoBehaviour
 
     public void DoStaminaChange(float staminaChange)
     {
+        if (_debuff == Debuff.NOSTAMINAREGEN) return;
         _stamina += staminaChange;
         if (_stamina > _maxStamina)
         {
@@ -104,6 +117,11 @@ public class Player : MonoBehaviour
         _UIStamina.value = _stamina / _maxStamina;
     }
 
+    public void DoApplyDebuff (Debuff debuffToApply)
+    {
+        _debuff = debuffToApply;
+    }
+
     public void RechargeStamina()
     {
         DoStaminaChange(_staminaRechargePercent * 0.01f * _maxStamina);
@@ -113,7 +131,8 @@ public class Player : MonoBehaviour
     {
         foreach (Melee melee in _meleeActions)
         {
-            melee.SetRegisteringInput(isEnabled);
+            if (IsDebuffed(melee,_debuff)) melee.SetRegisteringInput(false);
+            else melee.SetRegisteringInput(isEnabled);
         }
     }
 
@@ -125,5 +144,20 @@ public class Player : MonoBehaviour
         _stamina = _maxStamina;
         _UIHealth.value = _health / _maxHealth;
         _UIStamina.value = _stamina / _maxStamina;
+    }
+
+    private bool IsDebuffed(Melee melee, Debuff currentDebuff)
+    {
+        switch (melee.MeleeTarget)
+        {
+            case Melee.Target.BODY:
+                return currentDebuff == Debuff.CANNOTBODY;
+            case Melee.Target.HEAD:
+                return currentDebuff == Debuff.CANNOTHEAD;           
+            case Melee.Target.LEGS:
+                return currentDebuff == Debuff.CANNOTLEGS;
+            default:
+                return false;
+        }
     }
 }

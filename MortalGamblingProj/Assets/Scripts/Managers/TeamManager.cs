@@ -79,6 +79,11 @@ public class TeamManager : MonoBehaviour
         _teams[teamIdx].ApplyStaminaChange(staminaChange, playerIdx);
     }
 
+    public void ApplyTeamDebuff(int TeamIdx, int playerIdx, Player.Debuff debuffToApply)
+    {
+        _teams[TeamIdx].ApplyDebuffChange(debuffToApply, playerIdx);
+    }
+
     public void RechargeEveryoneStamina()
     {
         foreach(Team team in _teams)
