@@ -12,7 +12,8 @@ public class Player : MonoBehaviour
         CANNOTBODY,
         CANNOTHEAD,
         NOHEALING,
-        NOSTAMINAREGEN,        
+        NOSTAMINAREGEN,
+        CANNOTUSEITEM
     }
 
     //Events
@@ -33,11 +34,11 @@ public class Player : MonoBehaviour
     private int _id = -1;
     private float _health;
     private float _stamina;
-    private Debuff _debuff;
+    private Debuff _debuff = Debuff.NONE;
 
     //Melee variables
     [SerializeField] private int _meleeAmount = 3;
-    [SerializeField] private Transform _meleePosition =  null;
+    [SerializeField] private Transform _meleePosition = null;
     [SerializeField] private Melee _meleePrefab = null;
     [SerializeField] private float _meleeOffset = 0.0f;
     [SerializeField] private float _meleeBaseDamage = 0.0f;
@@ -45,9 +46,14 @@ public class Player : MonoBehaviour
     [SerializeField] private List<Sprite> _meleeSprites = new List<Sprite>();
 
     //Item variables
-    [SerializeField] private Item _itemPrefab = null;
+    [SerializeField] private Potion _potionPrefab = null;
+    [SerializeField] private Transform _itemPosition = null;
+    [SerializeField] private float _itemOffset = 0.0f;
+
 
     private List<Melee> _meleeActions = new List<Melee>();
+    private List<Item> _itemActions = new List<Item>();
+
 
     public void Initialize(int index)
     {
@@ -55,6 +61,7 @@ public class Player : MonoBehaviour
         {
             CreateMelee((Melee.Target)(i - 1), _meleeSprites[i], (i - 1) * _meleeOffset);
         }
+        CreatePotion(_itemOffset);
         Reset();
         _id = index;
     }
@@ -67,6 +74,16 @@ public class Player : MonoBehaviour
         newMelee.transform.position = _meleePosition.position + new Vector3(offset, 0, 0);
         newMelee.transform.SetParent(transform);
         _meleeActions.Add(newMelee);
+    }
+
+    private void CreatePotion(float offset)
+    {
+        Potion newPotion = Instantiate(_potionPrefab);
+        newPotion.Initialize(20,0,Debuff.NONE,"Potion");
+        newPotion.OnActivate += OnCardChosen;
+        newPotion.transform.position = _itemPosition.position + new Vector3(offset, 0, 0);
+        newPotion.transform.SetParent(transform);
+        _itemActions.Add(newPotion);
     }
 
     public void Tick()
@@ -131,8 +148,14 @@ public class Player : MonoBehaviour
     {
         foreach (Melee melee in _meleeActions)
         {
-            if (IsDebuffed(melee,_debuff)) melee.SetRegisteringInput(false);
+            if (IsMeleeDebuffed(melee,_debuff)) melee.SetRegisteringInput(false);
             else melee.SetRegisteringInput(isEnabled);
+        }
+
+        foreach (Item item in _itemActions)
+        {
+            if(_debuff == Debuff.CANNOTUSEITEM)  item.SetRegisteringInput(false);
+            else item.SetRegisteringInput(isEnabled);
         }
     }
 
@@ -144,9 +167,11 @@ public class Player : MonoBehaviour
         _stamina = _maxStamina;
         _UIHealth.value = _health / _maxHealth;
         _UIStamina.value = _stamina / _maxStamina;
+        _debuff = Debuff.NONE;
     }
 
-    private bool IsDebuffed(Melee melee, Debuff currentDebuff)
+
+    private bool IsMeleeDebuffed(Melee melee, Debuff currentDebuff)
     {
         switch (melee.MeleeTarget)
         {
