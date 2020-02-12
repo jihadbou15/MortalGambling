@@ -717,6 +717,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66dcc90b4ebd9b249933b730af197472, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _resolver:
+    MeleeAttacks:
+    - Attacks: 1
+      GetsParriedBy: 1
+      GetsHitOn: -1
+    - Attacks: 0
+      GetsParriedBy: 0
+      GetsHitOn: 2
+    - Attacks: -1
+      GetsParriedBy: -1
+      GetsHitOn: 1
 --- !u!114 &1934455682
 MonoBehaviour:
   m_ObjectHideFlags: 0
