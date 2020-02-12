@@ -49,6 +49,11 @@ public class Team : MonoBehaviour
         _players[playerIdx].DoStaminaChange(staminaChange);
     }
 
+    public void ApplyDebuffChange(Player.Debuff debuffToApply, int playerIdx)
+    {
+        _players[playerIdx].DoApplyDebuff(debuffToApply);
+    }
+
     public void RechargeTeamStamina()
     {
         foreach(Player player in _players)

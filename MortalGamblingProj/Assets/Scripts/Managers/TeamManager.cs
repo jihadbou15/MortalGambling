@@ -69,14 +69,19 @@ public class TeamManager : MonoBehaviour
         return _teams[teamId].GetPlayerAmount();
     }
 
-    public void ApplyTeamHealthChange(int teamIdx, int playerIdx, int healthChange)
+    public void ApplyTeamHealthChange(int teamIdx, int playerIdx, float healthChange)
     {
         _teams[teamIdx].ApplyHealthChange(healthChange, playerIdx);
     }
 
-    public void ApplyTeamStaminaChange(int teamIdx, int playerIdx, int staminaChange)
+    public void ApplyTeamStaminaChange(int teamIdx, int playerIdx, float staminaChange)
     {
         _teams[teamIdx].ApplyStaminaChange(staminaChange, playerIdx);
+    }
+
+    public void ApplyTeamDebuff(int TeamIdx, int playerIdx, Player.Debuff debuffToApply)
+    {
+        _teams[TeamIdx].ApplyDebuffChange(debuffToApply, playerIdx);
     }
 
     public void RechargeEveryoneStamina()

@@ -147,9 +147,10 @@ public class TurnManager : MonoBehaviour
         {
 
         }
-        else
+        else if(attackerType == Action.ActionType.ITEM ||
+            defenderType == Action.ActionType.ITEM)
         {
-
+            OnApplyTurnOutcome?.Invoke(Outcome.ItemUse, _attackerActions[0], _defenderActions[0]);
         }
     }
 
