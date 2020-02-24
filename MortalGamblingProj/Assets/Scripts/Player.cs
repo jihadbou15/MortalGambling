@@ -195,7 +195,7 @@ public class Player : MonoBehaviour
     }
     public void EnableCardInput(bool isEnabled)
     {
-        CheckDebuff();
+        //CheckDebuff();
         foreach (Melee melee in _meleeActions)
         {
             if (IsMeleeDebuffed(melee,_debuff)) melee.SetRegisteringInput(false);

@@ -107,6 +107,11 @@ public class TeamManager : MonoBehaviour
         _teams[idx].EnableTeamCardInput(isEnabled);
     }
 
+    public void CheckTeamDebuffs(int idx)
+    {
+        _teams[idx].CheckTeamDebuff();
+    }
+
     public void Clear()
     {
         foreach(Team team in _teams)
