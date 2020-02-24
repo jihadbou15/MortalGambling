@@ -1,12 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
 public class Potion : Item
 {
-    public virtual void Initialize(float healthEffect, float staminaEffect, Player.Debuff debuffEffect, string itemName)
+    public virtual void Initialize(Sprite potionSprite, float healthEffect, float staminaEffect, Player.Debuff debuffEffect, string itemName)
     {
+        _image.sprite = potionSprite;
         HealthEffect = healthEffect;
         StaminaEffect = staminaEffect;
         DebuffEffect = debuffEffect;

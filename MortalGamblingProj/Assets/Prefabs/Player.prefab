@@ -898,7 +898,12 @@ MonoBehaviour:
   - {fileID: 21300000, guid: a779798af677cdc4d9c7b5c5dd0c8332, type: 3}
   - {fileID: 21300000, guid: bd2e4689a043a04468c45777a7b46dd7, type: 3}
   - {fileID: 21300000, guid: 0a9a5a2df900bbc4ba7457631ca676b7, type: 3}
+  _itemSprites:
+  - {fileID: 21300000, guid: b58674498ffe4534093895795a5cef06, type: 3}
+  - {fileID: 21300000, guid: 787914c63d2e0024c9b226d591d5b9c8, type: 3}
   _potionPrefab: {fileID: 3990758177951155755, guid: c2ececea146ad8c4b8b2cbb321e28026,
+    type: 3}
+  _disablerPrefab: {fileID: 352962617214850602, guid: 6b432b8559b02b44391ce8fa00fadbc3,
     type: 3}
   _itemPosition: {fileID: 6390322881947671225}
   _itemOffset: -200

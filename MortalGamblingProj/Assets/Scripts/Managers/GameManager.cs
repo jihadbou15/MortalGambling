@@ -133,22 +133,31 @@ public class GameManager : MonoBehaviour
             }
             case TurnManager.Outcome.ItemUse:
             {
-                    if (attackerAction.Action.Type == Action.ActionType.ITEM)
-                    {
-                        Item attackerItemAction = (Item)attackerAction.Action;
-                        _teamManager.ApplyTeamHealthChange(attackerAction.TeamID, attackerAction.PlayerID, attackerItemAction.HealthEffect);
-                        _teamManager.ApplyTeamStaminaChange(attackerAction.TeamID, attackerAction.PlayerID, attackerItemAction.StaminaEffect);
-                        //Process debuff
-                        _teamManager.ApplyTeamDebuff(attackerAction.TeamID, attackerAction.PlayerID, attackerItemAction.DebuffEffect);
-                    }
+                   
                     if (defenderAction.Action.Type == Action.ActionType.ITEM)
                     {
                         Item defenderItemAction = (Item)defenderAction.Action;
                         _teamManager.ApplyTeamHealthChange(defenderAction.TeamID, defenderAction.PlayerID, defenderItemAction.HealthEffect);
                         _teamManager.ApplyTeamStaminaChange(defenderAction.TeamID, defenderAction.PlayerID, defenderItemAction.StaminaEffect);
                         //Process debuff
-                        _teamManager.ApplyTeamDebuff(defenderAction.TeamID, defenderAction.PlayerID, defenderItemAction.DebuffEffect);
+                        _teamManager.ApplyTeamDebuff(attackerAction.TeamID, attackerAction.PlayerID, defenderItemAction.DebuffEffect);
 
+                    } 
+                    
+                    if (attackerAction.Action.Type == Action.ActionType.ITEM)
+                    {
+                        Item attackerItemAction = (Item)attackerAction.Action;
+                        _teamManager.ApplyTeamHealthChange(attackerAction.TeamID, attackerAction.PlayerID, attackerItemAction.HealthEffect);
+                        _teamManager.ApplyTeamStaminaChange(attackerAction.TeamID, attackerAction.PlayerID, attackerItemAction.StaminaEffect);
+                        //Process debuff
+                        _teamManager.ApplyTeamDebuff(defenderAction.TeamID, defenderAction.PlayerID, attackerItemAction.DebuffEffect);
+                    }
+                    else
+                    {
+                        Melee attackerMeleeAction = (Melee)attackerAction.Action;
+                        _teamManager.ApplyTeamStaminaChange(attackerAction.TeamID, attackerAction.PlayerID, -(int)attackerMeleeAction.StaminaCost);
+                        _teamManager.ApplyTeamHealthChange(defenderAction.TeamID, defenderAction.PlayerID, -(int)attackerMeleeAction.StaminaCost);
+                        break;
                     }
                 PhaseSetup();
                 break;

@@ -35,6 +35,7 @@ public class Player : MonoBehaviour
     private float _health;
     private float _stamina;
     private Debuff _debuff = Debuff.NONE;
+    private bool _debuffCanBeCleared = false;
 
     //Melee variables
     [SerializeField] private int _meleeAmount = 3;
@@ -44,9 +45,11 @@ public class Player : MonoBehaviour
     [SerializeField] private float _meleeBaseDamage = 0.0f;
     [SerializeField] private float _meleeBaseStaminaCost = 0.0f;
     [SerializeField] private List<Sprite> _meleeSprites = new List<Sprite>();
+    [SerializeField] private List<Sprite> _itemSprites = new List<Sprite>();
 
     //Item variables
     [SerializeField] private Potion _potionPrefab = null;
+    [SerializeField] private Disabler _disablerPrefab = null;
     [SerializeField] private Transform _itemPosition = null;
     [SerializeField] private float _itemOffset = 0.0f;
 
@@ -61,7 +64,11 @@ public class Player : MonoBehaviour
         {
             CreateMelee((Melee.Target)(i - 1), _meleeSprites[i], (i - 1) * _meleeOffset);
         }
-        CreatePotion(_itemOffset);
+        CreatePotion(_itemOffset,false);
+        CreatePotion(_itemOffset - 100.0f, true);
+        CreateDisabler(_itemOffset + 450.0f, Debuff.CANNOTHEAD);
+        CreateDisabler(_itemOffset + 550.0f, Debuff.CANNOTBODY);
+        CreateDisabler(_itemOffset + 650.0f, Debuff.CANNOTLEGS);
         Reset();
         _id = index;
     }
@@ -76,14 +83,42 @@ public class Player : MonoBehaviour
         _meleeActions.Add(newMelee);
     }
 
-    private void CreatePotion(float offset)
+    private void CreatePotion(float offset, bool isStamina)
     {
         Potion newPotion = Instantiate(_potionPrefab);
-        newPotion.Initialize(20,0,Debuff.NONE,"Potion");
-        newPotion.OnActivate += OnCardChosen;
+        if(isStamina) newPotion.Initialize(_itemSprites[1],0, 20,Debuff.NONE,"Stamina Potion");
+        else newPotion.Initialize(_itemSprites[0], 20, 0, Debuff.NONE, "Health Potion");
+        newPotion.OnActivate += OnItemChosen;
         newPotion.transform.position = _itemPosition.position + new Vector3(offset, 0, 0);
         newPotion.transform.SetParent(transform);
         _itemActions.Add(newPotion);
+        newPotion.AddItem(2);
+    }
+
+    private void CreateDisabler(float offset, Debuff toDisable)
+    {
+        Disabler newDisabler = Instantiate(_disablerPrefab);
+        
+        switch(toDisable)
+        {
+            case Debuff.CANNOTHEAD:
+                newDisabler.Initialize(_meleeSprites[2], toDisable, "Disable Head");
+                break;
+            case Debuff.CANNOTBODY:
+                newDisabler.Initialize(_meleeSprites[1], toDisable, "Disable Body");
+                break;
+            case Debuff.CANNOTLEGS:
+                newDisabler.Initialize(_meleeSprites[0], toDisable, "Disable Legs");
+                break;
+            default:
+                Debug.Log("Could not debuff");
+                break;
+        }
+
+        newDisabler.OnActivate += OnItemChosen;
+        newDisabler.transform.position = _itemPosition.position + new Vector3(offset, 0, 0);
+        newDisabler.transform.SetParent(transform);
+        _itemActions.Add(newDisabler);
     }
 
     public void Tick()
@@ -97,9 +132,11 @@ public class Player : MonoBehaviour
         OnActivate.Invoke(action, _id);
     }
 
-    public void OnTurnEnd()
+    private void OnItemChosen(Action item)
     {
-        EnableCardInput(true);
+        Item localItem = (Item)item;
+        localItem.UseItem();
+        OnActivate.Invoke(item, _id);
     }
 
     public void DoHealthChange(float healthChange)
@@ -139,13 +176,26 @@ public class Player : MonoBehaviour
         _debuff = debuffToApply;
     }
 
+    public void CheckDebuff()
+    {
+        if (_debuffCanBeCleared) ClearDebuff();
+        else if (_debuff != Debuff.NONE) 
+            _debuffCanBeCleared = true;
+    }
+
+    public void ClearDebuff()
+    {
+        _debuff = Debuff.NONE;
+        _debuffCanBeCleared = false;
+    }
+
     public void RechargeStamina()
     {
         DoStaminaChange(_staminaRechargePercent * 0.01f * _maxStamina);
     }
-
     public void EnableCardInput(bool isEnabled)
     {
+        CheckDebuff();
         foreach (Melee melee in _meleeActions)
         {
             if (IsMeleeDebuffed(melee,_debuff)) melee.SetRegisteringInput(false);
@@ -154,7 +204,8 @@ public class Player : MonoBehaviour
 
         foreach (Item item in _itemActions)
         {
-            if(_debuff == Debuff.CANNOTUSEITEM)  item.SetRegisteringInput(false);
+            if (_debuff == Debuff.CANNOTUSEITEM) item.SetRegisteringInput(false);
+            else if (item.ItemAmount <= 0) item.SetRegisteringInput(false);
             else item.SetRegisteringInput(isEnabled);
         }
     }

@@ -92,6 +92,7 @@ public class Team : MonoBehaviour
         foreach(Player player in _players)
         {
             player.EnableCardInput(isEnabled);
+            if (isEnabled) player.CheckDebuff();
         }
     }
 
