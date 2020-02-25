@@ -87,7 +87,7 @@ public class TurnManager : MonoBehaviour
         return _teamCounter;
     }
 
-    public void ResetTurns()
+    public void ResetTurns ()
     {
         _isAttacking = true;
         _actionCounter = 0;
@@ -159,8 +159,10 @@ public class TurnManager : MonoBehaviour
         Melee.Target attackerTarget = ((Melee)_attackerActions[0].Action).MeleeTarget;
         Melee.Target defenderTarget = ((Melee)_defenderActions[0].Action).MeleeTarget;
 
-        Outcome outcome = _resolver.GetOutcome(attackerTarget, defenderTarget);
-
-        OnApplyTurnOutcome?.Invoke(outcome, _attackerActions[0], _defenderActions[0]);
+        Outcome outcome;
+        if (defenderTarget == Melee.Target.NONE) outcome = Outcome.Hit;
+        else outcome = _resolver.GetOutcome(attackerTarget, defenderTarget);
+    
+            OnApplyTurnOutcome?.Invoke(outcome, _attackerActions[0], _defenderActions[0]);
     }
 }

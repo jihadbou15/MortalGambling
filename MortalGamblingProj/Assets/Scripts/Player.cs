@@ -76,21 +76,21 @@ public class Player : MonoBehaviour
     private void CreateMelee(Melee.Target meleeTarget, Sprite meleeSprite, float offset)
     {
         Melee newMelee = Instantiate(_meleePrefab);
-        newMelee.Initialize(meleeSprite, meleeTarget, _meleeBaseDamage, _meleeBaseStaminaCost);
         newMelee.OnActivate += OnCardChosen;
         newMelee.transform.position = _meleePosition.position + new Vector3(offset, 0, 0);
         newMelee.transform.SetParent(transform);
+        newMelee.Initialize(meleeSprite, meleeTarget, _meleeBaseDamage, _meleeBaseStaminaCost);
         _meleeActions.Add(newMelee);
     }
 
     private void CreatePotion(float offset, bool isStamina)
     {
         Potion newPotion = Instantiate(_potionPrefab);
-        if(isStamina) newPotion.Initialize(_itemSprites[1],0, 20,Debuff.NONE,"Stamina Potion");
-        else newPotion.Initialize(_itemSprites[0], 20, 0, Debuff.NONE, "Health Potion");
         newPotion.OnActivate += OnItemChosen;
         newPotion.transform.position = _itemPosition.position + new Vector3(offset, 0, 0);
         newPotion.transform.SetParent(transform);
+        if (isStamina) newPotion.Initialize(_itemSprites[1],0, 20,Debuff.NONE,"Stamina Potion");
+        else newPotion.Initialize(_itemSprites[0], 20, 0, Debuff.NONE, "Health Potion");
         _itemActions.Add(newPotion);
         newPotion.AddItem(2);
     }
@@ -129,7 +129,8 @@ public class Player : MonoBehaviour
 
     private void OnCardChosen(Action action)
     {
-        OnActivate.Invoke(action, _id);
+        if (_stamina > 0) OnActivate.Invoke(action, _id);
+        else Debug.Log("No Stamina to attack");
     }
 
     private void OnItemChosen(Action item)

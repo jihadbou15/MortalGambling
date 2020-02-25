@@ -19,6 +19,7 @@ public class Melee : Action
     public Target MeleeTarget { get; private set; } = Target.NONE;
     public float Damage { get; private set; } = 0.0f;
     public float StaminaCost { get; private set; } = 0.0f;
+    public float DefensiveStaminaPenalty { get; private set; } = 0.0f;
 
     public void Initialize(Sprite meleeSprite, Target meleeTarget, float baseDamage, float baseStaminaCost)
     {
@@ -26,6 +27,8 @@ public class Melee : Action
         MeleeTarget = meleeTarget;
 
         Damage = baseDamage + ((int)meleeTarget * 0.5f * baseDamage);
-        StaminaCost = baseStaminaCost + ((int)meleeTarget * 0.5f * baseStaminaCost);
+        StaminaCost = baseStaminaCost + (Mathf.Abs((int)meleeTarget) * 0.5f * baseStaminaCost);
+        DefensiveStaminaPenalty = baseStaminaCost / 2.0f;
+        GetComponent<CardMovement>().Initialize();
     }
 }

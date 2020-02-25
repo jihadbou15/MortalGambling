@@ -22,7 +22,7 @@ public class Action : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
     public event ActionCallback OnActivate;
 
     [SerializeField] protected Image _image = null;
-    protected bool _isRegisteringInput = false;
+    public bool _isRegisteringInput { get; private set; } = false;
 
     public virtual void OnPointerClick(PointerEventData eventData) 
     {
