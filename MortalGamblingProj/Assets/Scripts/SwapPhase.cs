@@ -8,7 +8,7 @@ public class SwapPhase : MonoBehaviour
     [SerializeField] private Image _attackImage = null;
     [SerializeField] private Image _defendImage = null;
     [SerializeField] private Transform _Selection = null;
-    private float _lerpSpeed = 0.2F;
+    private float _lerpSpeed = 0.2f;
     private bool _isAttacking;
 
     // Update is called once per frame

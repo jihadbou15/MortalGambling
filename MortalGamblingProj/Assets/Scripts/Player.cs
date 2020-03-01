@@ -145,6 +145,7 @@ public class Player : MonoBehaviour
         Item localItem = (Item)item;
         localItem.UseItem();
         OnActivate.Invoke(item, _id);
+        _itemMenu.SetOpenFlag(false);
     }
 
     public void DoHealthChange(float healthChange)
@@ -207,7 +208,7 @@ public class Player : MonoBehaviour
         //CheckDebuff();
         foreach (Melee melee in _meleeActions)
         {
-            if (IsMeleeDebuffed(melee,_debuff) || (_stamina <=0) ) melee.SetRegisteringInput(false);
+            if (IsMeleeDebuffed(melee,_debuff) || (_stamina <= 0) ) melee.SetRegisteringInput(false);
             else melee.SetRegisteringInput(isEnabled);
         }
 
