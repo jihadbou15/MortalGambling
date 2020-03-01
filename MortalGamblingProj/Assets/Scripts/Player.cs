@@ -208,7 +208,7 @@ public class Player : MonoBehaviour
         //CheckDebuff();
         foreach (Melee melee in _meleeActions)
         {
-            if (IsMeleeDebuffed(melee,_debuff) || (_stamina <= 0) ) melee.SetRegisteringInput(false);
+            if (IsMeleeDebuffed(melee,_debuff) || (_stamina <= 0.0f) ) melee.SetRegisteringInput(false);
             else melee.SetRegisteringInput(isEnabled);
         }
 
