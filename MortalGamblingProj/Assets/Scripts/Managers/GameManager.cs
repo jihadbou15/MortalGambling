@@ -61,9 +61,13 @@ public class GameManager : MonoBehaviour
             {
                 enable = true;
                 _enabledTeamID = i;
+                _teamManager.SetPhaseFeedback(true, i);
             }
+            else _teamManager.SetPhaseFeedback(false, i);
+
             _teamManager.CheckTeamDebuffs(i);
             _teamManager.EnableTeamCardInput(enable, i);
+
         }
 
         _turnManager.SetActionAmount(_teamManager.GetPlayerAmount(attackingTeamId));

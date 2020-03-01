@@ -27,15 +27,17 @@ public class Player : MonoBehaviour
     //Player variables
     [SerializeField] private float _maxHealth = 100;
     [SerializeField] private float _maxStamina = 100;
-    [SerializeField] private Slider _UIHealth = null;
-    [SerializeField] private Slider _UIStamina = null;
+    [SerializeField] private UIBarSmoothing _UIHealth = null;
+    [SerializeField] private UIBarSmoothing _UIStamina = null;
     [SerializeField] private float _staminaRechargePercent = 0.0f;
+    [SerializeField] private SwapPhase _CurrentPhase = null;
 
     private int _id = -1;
     private float _health;
     private float _stamina;
     private Debuff _debuff = Debuff.NONE;
     private bool _debuffCanBeCleared = false;
+    public bool _ItemsEnabled = false;
 
     //Melee variables
     [SerializeField] private int _meleeAmount = 3;
@@ -46,12 +48,14 @@ public class Player : MonoBehaviour
     [SerializeField] private float _meleeBaseStaminaCost = 0.0f;
     [SerializeField] private List<Sprite> _meleeSprites = new List<Sprite>();
     [SerializeField] private List<Sprite> _itemSprites = new List<Sprite>();
+    private Melee _emptyMelee = null;
 
     //Item variables
     [SerializeField] private Potion _potionPrefab = null;
     [SerializeField] private Disabler _disablerPrefab = null;
     [SerializeField] private Transform _itemPosition = null;
     [SerializeField] private float _itemOffset = 0.0f;
+    [SerializeField] private ItemMenu _itemMenu = null;
 
 
     private List<Melee> _meleeActions = new List<Melee>();
@@ -60,15 +64,18 @@ public class Player : MonoBehaviour
 
     public void Initialize(int index)
     {
-        for(int i = 0; i < _meleeAmount; i++)
+        _UIHealth.Initialize(1.0f);
+        _UIStamina.Initialize(1.0f);
+        for (int i = 0; i < _meleeAmount; i++)
         {
             CreateMelee((Melee.Target)(i - 1), _meleeSprites[i], (i - 1) * _meleeOffset);
         }
         CreatePotion(_itemOffset,false);
-        CreatePotion(_itemOffset - 100.0f, true);
-        CreateDisabler(_itemOffset + 450.0f, Debuff.CANNOTHEAD);
-        CreateDisabler(_itemOffset + 550.0f, Debuff.CANNOTBODY);
-        CreateDisabler(_itemOffset + 650.0f, Debuff.CANNOTLEGS);
+        CreatePotion(_itemOffset, true);
+        CreateDisabler(_itemOffset, Debuff.CANNOTHEAD);
+        CreateDisabler(_itemOffset, Debuff.CANNOTBODY);
+        CreateDisabler(_itemOffset, Debuff.CANNOTLEGS);
+        _itemMenu.Initialize(_itemActions);
         Reset();
         _id = index;
     }
@@ -130,7 +137,8 @@ public class Player : MonoBehaviour
     private void OnCardChosen(Action action)
     {
         if (_stamina > 0) OnActivate.Invoke(action, _id);
-        else Debug.Log("No Stamina to attack");
+        else Debug.Log("No stamina"); //OnActivate.Invoke(_emptyMelee,_id);
+        _itemMenu.SetOpenFlag(false);
     }
 
     private void OnItemChosen(Action item)
@@ -153,7 +161,7 @@ public class Player : MonoBehaviour
             _health = 0.0f;
             OnPlayerHealthEmpty?.Invoke();
         }
-        _UIHealth.value = _health / _maxHealth;
+        _UIHealth.OnValueChange(_health / _maxHealth);
     }
 
     public void DoStaminaChange(float staminaChange)
@@ -169,7 +177,7 @@ public class Player : MonoBehaviour
             _stamina = 0.0f;
             OnPlayerStaminaEmpty?.Invoke();
         }
-        _UIStamina.value = _stamina / _maxStamina;
+        _UIStamina.OnValueChange(_stamina / _maxStamina);
     }
 
     public void DoApplyDebuff (Debuff debuffToApply)
@@ -194,6 +202,7 @@ public class Player : MonoBehaviour
     {
         DoStaminaChange(_staminaRechargePercent * 0.01f * _maxStamina);
     }
+
     public void EnableCardInput(bool isEnabled)
     {
         //CheckDebuff();
@@ -203,12 +212,14 @@ public class Player : MonoBehaviour
             else melee.SetRegisteringInput(isEnabled);
         }
 
+        _ItemsEnabled = isEnabled;
         foreach (Item item in _itemActions)
         {
             if (_debuff == Debuff.CANNOTUSEITEM) item.SetRegisteringInput(false);
             else if (item.ItemAmount <= 0) item.SetRegisteringInput(false);
             else item.SetRegisteringInput(isEnabled);
         }
+        
     }
 
     public void Reset()
@@ -217,8 +228,8 @@ public class Player : MonoBehaviour
 
         _health = _maxHealth;
         _stamina = _maxStamina;
-        _UIHealth.value = _health / _maxHealth;
-        _UIStamina.value = _stamina / _maxStamina;
+        _UIHealth.OnValueChange(_health / _maxHealth);
+        _UIStamina.OnValueChange(_stamina / _maxStamina);
         _debuff = Debuff.NONE;
     }
 
@@ -236,5 +247,10 @@ public class Player : MonoBehaviour
             default:
                 return false;
         }
+    }
+
+    public void SetPhaseSprite(bool isAttacking)
+    {
+        _CurrentPhase.SetIsAttacking(isAttacking);
     }
 }

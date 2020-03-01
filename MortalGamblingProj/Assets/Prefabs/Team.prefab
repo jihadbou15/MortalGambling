@@ -50,3 +50,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerPrefab: {fileID: 9196699255032625302, guid: 41640c8b65d5f304e8854bf4dc703d36,
     type: 3}
+  _phaseImages:
+  - {fileID: 21300000, guid: df5209235ea3ff94fb54a756e1436645, type: 3}
+  - {fileID: 21300000, guid: 1b55292e3d90b914ba2f6dc2618af636, type: 3}

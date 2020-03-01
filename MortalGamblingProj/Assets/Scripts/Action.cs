@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 
-public class Action : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+public class Action : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler ,IPointerDownHandler
 {
     [System.Serializable]
     public enum ActionType
@@ -23,6 +23,9 @@ public class Action : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
 
     [SerializeField] protected Image _image = null;
     public bool _isRegisteringInput { get; private set; } = false;
+    private int normalSiblingIdx = 0;
+    private bool _isHovering = false;
+    private float _lerpSpeed = 0.2f;
 
     public virtual void OnPointerClick(PointerEventData eventData) 
     {
@@ -36,20 +39,56 @@ public class Action : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (_isRegisteringInput) _image.color = Color.blue;
-        else _image.color = Color.grey;
+        _isHovering = true;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (_isRegisteringInput) _image.color = Color.white;
-        else _image.color = Color.grey;
+        _isHovering = false;
     }
 
     public void SetRegisteringInput(bool isRegisteringInput)
     {
         _isRegisteringInput = isRegisteringInput;
-        if (_isRegisteringInput) _image.color = Color.white;
-        else _image.color = Color.grey;
+    }
+
+    private void Update()
+    {
+        if (_isRegisteringInput)
+        {
+            if (_isHovering) SetHoveringFeedback();
+            else SetUnHoveringFeedback();
+        }
+        else SetDisabledFeedback();
+
+    }
+
+    private void SetHoveringFeedback()
+    {
+
+        //_image.color = Color.Lerp(_image.color,Color.blue, _lerpSpeed);
+        _image.color = Color.blue;
+        transform.SetAsLastSibling();
+    }
+
+    private void SetUnHoveringFeedback()
+    {
+        _image.color = Color.Lerp(_image.color, Color.white, _lerpSpeed);
+        transform.SetAsFirstSibling();
+    }
+
+    private void SetDisabledFeedback()
+    {
+        _image.color = Color.Lerp(_image.color, Color.grey, _lerpSpeed);
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        
     }
 }

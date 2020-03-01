@@ -124,4 +124,9 @@ public class TeamManager : MonoBehaviour
     {
         OnCardActivate?.Invoke(new ActionData(action, teamId, playerId));
     }
+
+    public void SetPhaseFeedback(bool isAttacking, int teamid)
+    {
+        _teams[teamid].SetPhaseSprite(isAttacking);
+    }
 }

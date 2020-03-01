@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class CardMovement : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+public class CardMovement : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    private Transform transform;
+    private Transform _transform;
     private Vector3 startPosition;
     private Vector3 targetPosition;
     [SerializeField] private float offset = 0;
@@ -15,7 +15,7 @@ public class CardMovement : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
 
     public void Initialize()
     {
-        transform = GetComponent<Transform>();
+        _transform = GetComponent<Transform>();
         linkedAction = GetComponent<Action>();
         startPosition = transform.localPosition;
         targetPosition = new Vector3(transform.localPosition.x, transform.localPosition.y + offset, transform.localPosition.z);
@@ -30,12 +30,6 @@ public class CardMovement : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
     {
         pointerIsHovering = false;
     }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        throw new System.NotImplementedException();
-    }
-
     public void Update()
     {
         if(pointerIsHovering && linkedAction._isRegisteringInput) transform.localPosition = Vector3.Lerp(transform.localPosition, targetPosition, lerpSpeed);

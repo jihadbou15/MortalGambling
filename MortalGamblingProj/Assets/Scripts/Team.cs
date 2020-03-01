@@ -12,6 +12,7 @@ public class Team : MonoBehaviour
     public event TeamPlayerEmpty OnTeamPlayerStaminaEmpty;
 
     [SerializeField] private Player _playerPrefab = null;
+    [SerializeField] private List<Sprite> _phaseImages = null;
     private int _id = -1;
     private List<Player> _players = new List<Player>();
     private int _playerAmount = 1;
@@ -107,5 +108,13 @@ public class Team : MonoBehaviour
     private void DoCardActivate(Action action, int playerId)
     {
         OnCardActivate?.Invoke(action, _id, playerId);
+    }
+
+    public void SetPhaseSprite(bool isAttacking)
+    {
+        foreach(Player player in _players)
+        {
+            player.SetPhaseSprite(isAttacking);
+        }
     }
 }
