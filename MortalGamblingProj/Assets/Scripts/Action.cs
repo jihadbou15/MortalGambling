@@ -80,6 +80,7 @@ public class Action : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
     private void SetDisabledFeedback()
     {
         _image.color = Color.Lerp(_image.color, Color.grey, _lerpSpeed);
+        transform.SetAsFirstSibling();
     }
 
     public void OnPointerUp(PointerEventData eventData)

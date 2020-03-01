@@ -48,7 +48,6 @@ public class Player : MonoBehaviour
     [SerializeField] private float _meleeBaseStaminaCost = 0.0f;
     [SerializeField] private List<Sprite> _meleeSprites = new List<Sprite>();
     [SerializeField] private List<Sprite> _itemSprites = new List<Sprite>();
-    private Melee _emptyMelee = null;
 
     //Item variables
     [SerializeField] private Potion _potionPrefab = null;
@@ -208,7 +207,7 @@ public class Player : MonoBehaviour
         //CheckDebuff();
         foreach (Melee melee in _meleeActions)
         {
-            if (IsMeleeDebuffed(melee,_debuff)) melee.SetRegisteringInput(false);
+            if (IsMeleeDebuffed(melee,_debuff) || (_stamina <=0) ) melee.SetRegisteringInput(false);
             else melee.SetRegisteringInput(isEnabled);
         }
 
