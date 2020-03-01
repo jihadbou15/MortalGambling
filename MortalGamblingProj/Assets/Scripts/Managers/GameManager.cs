@@ -54,6 +54,8 @@ public class GameManager : MonoBehaviour
     void PhaseSetup()
     {
         int attackingTeamId = _phaseManager.GetAttackingTeamIdx();
+        _teamManager.CheckTeamDebuffs();
+
         for (int i = 0; i < _teamManager.GetTeamAmount(); ++i)
         {
             bool enable = false;
@@ -65,7 +67,6 @@ public class GameManager : MonoBehaviour
             }
             else _teamManager.SetPhaseFeedback(false, i);
 
-            _teamManager.CheckTeamDebuffs(i);
             _teamManager.EnableTeamCardInput(enable, i);
 
         }
@@ -87,6 +88,7 @@ public class GameManager : MonoBehaviour
 
     private void DoPhaseEnd()
     {
+        //_teamManager.CheckTeamDebuffs();
         PhaseSetup();
         _teamManager.RechargeEveryoneStamina();
     }
@@ -145,7 +147,8 @@ public class GameManager : MonoBehaviour
                     _teamManager.ApplyTeamStaminaChange(defenderAction.TeamID, defenderAction.PlayerID, defenderItemAction.StaminaEffect);
                     //Process debuff
                     _teamManager.ApplyTeamDebuff(attackerAction.TeamID, attackerAction.PlayerID, defenderItemAction.DebuffEffect);
-                    PhaseSetup();
+
+                    if(attackerAction.Action.Type != Action.ActionType.ITEM) PhaseSetup();
                 } 
                     
                 if (attackerAction.Action.Type == Action.ActionType.ITEM)
