@@ -52,12 +52,6 @@ public class TurnManager : MonoBehaviour
 
     [SerializeField] private MeleeResolver _resolver;
 
-    public delegate void TurnHandler();
-    public event TurnHandler OnTurnEnd;
-
-    public delegate void TurnResolverHandler(Outcome outcome, TeamManager.ActionData attackerAction, TeamManager.ActionData defenderAction);
-    public event TurnResolverHandler OnApplyTurnOutcome;
-
     private List<TeamManager.ActionData> _attackerActions = new List<TeamManager.ActionData>();
     private List<TeamManager.ActionData> _defenderActions = new List<TeamManager.ActionData>();
     private int _actionAmount = 0;
@@ -66,8 +60,14 @@ public class TurnManager : MonoBehaviour
     private int _teamCounter = 0;
     private bool _isAttacking = false;
 
-    public void Initialize(int teamAmount)
+    private TeamManager _teamManager;
+    private PhaseManager _phaseManager;
+
+
+    public void Initialize(int teamAmount, TeamManager teamManager, PhaseManager phaseManager)
     {
+        _teamManager = teamManager;
+        _phaseManager = phaseManager;
         _teamAmount = teamAmount;
         _isAttacking = true;
     }
@@ -107,7 +107,7 @@ public class TurnManager : MonoBehaviour
                 _isAttacking = false;
                 _actionCounter = 0;
                 _teamCounter++;
-                OnTurnEnd?.Invoke();
+                DoTurnEnd();
             }
         }
         else
@@ -120,7 +120,7 @@ public class TurnManager : MonoBehaviour
                 _teamCounter++;
                 if(_teamCounter < _teamAmount)
                 {
-                    OnTurnEnd?.Invoke();
+                    DoTurnEnd();
                 }
             }
         }
@@ -150,7 +150,7 @@ public class TurnManager : MonoBehaviour
         else if(attackerType == Action.ActionType.ITEM ||
             defenderType == Action.ActionType.ITEM)
         {
-            OnApplyTurnOutcome?.Invoke(Outcome.ItemUse, _attackerActions[0], _defenderActions[0]);
+            DoApplyTurnOutcome(Outcome.ItemUse, _attackerActions[0], _defenderActions[0]);
         }
     }
 
@@ -160,9 +160,98 @@ public class TurnManager : MonoBehaviour
         Melee.Target defenderTarget = ((Melee)_defenderActions[0].Action).MeleeTarget;
 
         Outcome outcome;
-        if (defenderTarget == Melee.Target.NONE) outcome = Outcome.Hit;
+        if (defenderTarget == Melee.Target.NONE)
+        {
+            outcome = Outcome.Hit;
+            _phaseManager._hasToSwapPhase = true;
+        }
         else outcome = _resolver.GetOutcome(attackerTarget, defenderTarget);
     
-            OnApplyTurnOutcome?.Invoke(outcome, _attackerActions[0], _defenderActions[0]);
+        DoApplyTurnOutcome(outcome, _attackerActions[0], _defenderActions[0]);
+    }
+
+    private void DoApplyTurnOutcome(Outcome outcome, TeamManager.ActionData attackerAction, TeamManager.ActionData defenderAction)
+    {
+
+        switch (outcome)
+        {
+            case Outcome.Parry:
+                {
+                    Melee attackerMeleeAction = (Melee)attackerAction.Action;
+                    _teamManager.ApplyTeamStaminaChange(attackerAction.TeamID, attackerAction.PlayerID, -(int)attackerMeleeAction.StaminaCost);
+                    _phaseManager.SwapPhase();
+                    break;
+                }
+            case Outcome.Defend:
+                {
+                    Melee attackerMeleeAction = (Melee)attackerAction.Action;
+                    Melee defenderMeleeAction = (Melee)defenderAction.Action;
+                    _teamManager.ApplyTeamStaminaChange(attackerAction.TeamID, attackerAction.PlayerID, -(int)attackerMeleeAction.StaminaCost);
+                    _teamManager.ApplyTeamStaminaChange(defenderAction.TeamID, defenderAction.PlayerID, -(int)(attackerMeleeAction.StaminaCost + defenderMeleeAction.DefensiveStaminaPenalty));
+                    _phaseManager.PhaseSetup();
+                    break;
+                }
+            case Outcome.Hit:
+                {
+                    Melee attackerMeleeAction = (Melee)attackerAction.Action;
+                    _teamManager.ApplyTeamStaminaChange(attackerAction.TeamID, attackerAction.PlayerID, -(int)attackerMeleeAction.StaminaCost);
+                    _teamManager.ApplyTeamHealthChange(defenderAction.TeamID, defenderAction.PlayerID, -(int)attackerMeleeAction.StaminaCost);
+                    _phaseManager.PhaseSetup();
+                    break;
+                }
+            case Outcome.ItemUse:
+                {
+                    if (defenderAction.Action.Type == Action.ActionType.ITEM)
+                    {
+                        Item defenderItemAction = (Item)defenderAction.Action;
+                        _teamManager.ApplyTeamHealthChange(defenderAction.TeamID, defenderAction.PlayerID, defenderItemAction.HealthEffect);
+                        _teamManager.ApplyTeamStaminaChange(defenderAction.TeamID, defenderAction.PlayerID, defenderItemAction.StaminaEffect);
+                        //Process debuff
+                        _teamManager.ApplyTeamDebuff(attackerAction.TeamID, attackerAction.PlayerID, defenderItemAction.DebuffEffect);
+
+                        if (attackerAction.Action.Type != Action.ActionType.ITEM) _phaseManager.PhaseSetup();
+                    }
+
+                    if (attackerAction.Action.Type == Action.ActionType.ITEM)
+                    {
+                        Item attackerItemAction = (Item)attackerAction.Action;
+                        _teamManager.ApplyTeamHealthChange(attackerAction.TeamID, attackerAction.PlayerID, attackerItemAction.HealthEffect);
+                        _teamManager.ApplyTeamStaminaChange(attackerAction.TeamID, attackerAction.PlayerID, attackerItemAction.StaminaEffect);
+                        //Process debuff
+                        _teamManager.ApplyTeamDebuff(defenderAction.TeamID, defenderAction.PlayerID, attackerItemAction.DebuffEffect);
+                        _phaseManager.SwapPhase();
+                    }
+                    else
+                    {
+                        Melee attackerMeleeAction = (Melee)attackerAction.Action;
+                        _teamManager.ApplyTeamStaminaChange(attackerAction.TeamID, attackerAction.PlayerID, -(int)attackerMeleeAction.StaminaCost);
+                        _teamManager.ApplyTeamHealthChange(defenderAction.TeamID, defenderAction.PlayerID, -(int)attackerMeleeAction.StaminaCost);
+                        _phaseManager.PhaseSetup();
+                    }
+
+                    break;
+                }
+        }
+
+        if (_phaseManager._hasToSwapPhase)
+        {
+            _phaseManager.SwapPhase();
+        }
+    }
+
+    public void DoTurnEnd()
+    {
+        int activeID = _phaseManager.GetAttackingTeamIdx();
+        int teamAmount = _teamManager.GetTeamAmount();
+
+        activeID += GetTeamCounter();
+        if (activeID >= teamAmount)
+        {
+            activeID = 0;
+        }
+
+        _teamManager.EnableTeamCardInput(false, _teamManager._enabledTeamID);
+        _teamManager.EnableTeamCardInput(true, activeID);
+        _teamManager._enabledTeamID = activeID;
     }
 }

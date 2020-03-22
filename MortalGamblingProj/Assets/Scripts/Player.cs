@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class Player : MonoBehaviour
 {
@@ -69,6 +70,7 @@ public class Player : MonoBehaviour
         {
             CreateMelee((Melee.Target)(i - 1), _meleeSprites[i], (i - 1) * _meleeOffset);
         }
+        CreateNoMelee(_meleeAmount * _meleeOffset);
         CreatePotion(_itemOffset,false);
         CreatePotion(_itemOffset, true);
         CreateDisabler(_itemOffset, Debuff.CANNOTHEAD);
@@ -86,6 +88,16 @@ public class Player : MonoBehaviour
         newMelee.transform.position = _meleePosition.position + new Vector3(offset, 0, 0);
         newMelee.transform.SetParent(transform);
         newMelee.Initialize(meleeSprite, meleeTarget, _meleeBaseDamage, _meleeBaseStaminaCost);
+        _meleeActions.Add(newMelee);
+    }
+
+    private void CreateNoMelee(float offset)
+    {
+        Melee newMelee = Instantiate(_meleePrefab);
+        newMelee.OnActivate += OnCardChosen;
+        newMelee.transform.position = _meleePosition.position + new Vector3(offset, 0, 0);
+        newMelee.transform.SetParent(transform);
+        newMelee.Initialize(_meleeSprites.Last(), Melee.Target.NONE, 0, 0);
         _meleeActions.Add(newMelee);
     }
 
@@ -135,8 +147,7 @@ public class Player : MonoBehaviour
 
     private void OnCardChosen(Action action)
     {
-        if (_stamina > 0) OnActivate.Invoke(action, _id);
-        else Debug.Log("No stamina"); //OnActivate.Invoke(_emptyMelee,_id);
+        OnActivate.Invoke(action, _id);
         _itemMenu.SetOpenFlag(false);
     }
 
@@ -208,7 +219,7 @@ public class Player : MonoBehaviour
         //CheckDebuff();
         foreach (Melee melee in _meleeActions)
         {
-            if (IsMeleeDebuffed(melee,_debuff) || (_stamina <= 0.0f) ) melee.SetRegisteringInput(false);
+            if (IsMeleeDebuffed(melee,_debuff) || (_stamina <= 0.0f && melee.StaminaCost > 0.0f) ) melee.SetRegisteringInput(false);
             else melee.SetRegisteringInput(isEnabled);
         }
 

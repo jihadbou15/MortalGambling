@@ -5,8 +5,8 @@ using UnityEngine.EventSystems;
 
 public class ItemMenu : MonoBehaviour, IPointerClickHandler 
 {
-    [SerializeField] private float _itemSpacing;
-    [SerializeField] private Player Player;
+    [SerializeField] private float _itemSpacing = 0;
+    [SerializeField] private Player Player = null;
     private List<Item> _itemActions = new List<Item>();
     private bool _isOpen = false;
 

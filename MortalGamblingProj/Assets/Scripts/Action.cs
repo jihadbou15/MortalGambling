@@ -23,7 +23,6 @@ public class Action : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
 
     [SerializeField] protected Image _image = null;
     public bool _isRegisteringInput { get; private set; } = false;
-    private int normalSiblingIdx = 0;
     private bool _isHovering = false;
     private float _lerpSpeed = 0.2f;
 

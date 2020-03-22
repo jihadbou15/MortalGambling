@@ -9,7 +9,7 @@ public class CardMovement : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     private Vector3 startPosition;
     private Vector3 targetPosition;
     [SerializeField] private float offset = 0;
-    [SerializeField] private float lerpSpeed;
+    [SerializeField] private float lerpSpeed = 0;
     private bool pointerIsHovering = false;
     private Action linkedAction;
 

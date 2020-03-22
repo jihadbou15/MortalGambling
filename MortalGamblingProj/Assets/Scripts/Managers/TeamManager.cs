@@ -18,20 +18,23 @@ public class TeamManager : MonoBehaviour
         }
     }
 
-    public delegate void TeamManagerCardHandler(ActionData actionData);
-    public event TeamManagerCardHandler OnCardActivate;
-
     public delegate void TeamManagerEmpty(int teamIdx);
-    public event TeamManagerEmpty OnStaminaEmpty;
     public event TeamManagerEmpty OnHealthEmpty;
 
     [SerializeField] private int _teamAmount = 0;
     [SerializeField] private Team _teamPrefab = null;
     [SerializeField] private float _teamOffset = 0.0f;
     private List<Team> _teams = new List<Team>();
+    public int _enabledTeamID = -1;
 
-    public void Initialize()
+    private PhaseManager _phaseManager;
+    private TurnManager _turnManager;
+
+    public void Initialize(PhaseManager phaseManager,TurnManager turnManager)
     {
+        _phaseManager = phaseManager;
+        _turnManager = turnManager;
+
         GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
         for(int i = 0; i < _teamAmount; ++i)
         {
@@ -94,7 +97,10 @@ public class TeamManager : MonoBehaviour
 
     public void DoTeamPlayerStaminaEmpty(int id)
     {
-        OnStaminaEmpty?.Invoke(id);
+        if (_phaseManager.GetAttackingTeamIdx() == id)
+        {
+            _phaseManager._hasToSwapPhase = true;
+        }
     }
 
     public void DoTeamPlayerHealthEmpty(int id)
@@ -125,11 +131,13 @@ public class TeamManager : MonoBehaviour
 
     private void DoCardActivate(Action action, int teamId, int playerId)
     {
-        OnCardActivate?.Invoke(new ActionData(action, teamId, playerId));
+        _turnManager.AddToResolver(new ActionData(action, teamId, playerId));
     }
 
     public void SetPhaseFeedback(bool isAttacking, int teamid)
     {
         _teams[teamid].SetPhaseSprite(isAttacking);
     }
+
+
 }

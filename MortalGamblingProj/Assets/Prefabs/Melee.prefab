@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1867859445554711291}
   - component: {fileID: 5333340465372817216}
   - component: {fileID: 8192230387803020801}
+  - component: {fileID: -6629069611483208497}
   m_Layer: 5
   m_Name: Melee
   m_TagString: Untagged
@@ -103,3 +104,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   offset: 10
   lerpSpeed: 0.1
+--- !u!111 &-6629069611483208497
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2405861940524453305}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 0}
+  m_Animations: []
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
