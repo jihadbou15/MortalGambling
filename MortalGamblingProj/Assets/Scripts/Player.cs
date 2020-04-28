@@ -141,8 +141,15 @@ public class Player : MonoBehaviour
 
     public void Tick()
     {
-        if(_health <= 0) OnPlayerHealthEmpty.Invoke();
-        if (_stamina <= 0) OnPlayerStaminaEmpty.Invoke();
+        foreach(Action melee in _meleeActions) 
+        {
+            melee.Tick();
+        }
+
+        foreach(Action item in _itemActions)
+        {
+            item.Tick();
+        }
     }
 
     private void OnCardChosen(Action action)

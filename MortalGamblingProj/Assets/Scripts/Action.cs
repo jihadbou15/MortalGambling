@@ -51,7 +51,7 @@ public class Action : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
         _isRegisteringInput = isRegisteringInput;
     }
 
-    private void Update()
+    public void Tick()
     {
         if (_isRegisteringInput)
         {
@@ -64,7 +64,6 @@ public class Action : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
 
     private void SetHoveringFeedback()
     {
-
         //_image.color = Color.Lerp(_image.color,Color.blue, _lerpSpeed);
         _image.color = Color.blue;
         transform.SetAsLastSibling();

@@ -37,7 +37,10 @@ public class Team : MonoBehaviour
 
     public void Tick()
     {
-
+        foreach (Player player in _players) 
+        {
+            player.Tick();
+        }
     }
 
     public void ApplyHealthChange(float healthChange, int playerIdx)

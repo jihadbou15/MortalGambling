@@ -729,6 +729,9 @@ MonoBehaviour:
     - Attacks: -1
       GetsParriedBy: -1
       GetsHitOn: 1
+    - Attacks: 2
+      GetsParriedBy: 2
+      GetsHitOn: 1
 --- !u!114 &1934455682
 MonoBehaviour:
   m_ObjectHideFlags: 0
