@@ -64,8 +64,7 @@ public class Action : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
 
     private void SetHoveringFeedback()
     {
-        //_image.color = Color.Lerp(_image.color,Color.blue, _lerpSpeed);
-        _image.color = Color.blue;
+        _image.color = Color.Lerp(_image.color,Color.blue, _lerpSpeed);
         transform.SetAsLastSibling();
     }
 

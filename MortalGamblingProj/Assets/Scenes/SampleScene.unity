@@ -722,16 +722,16 @@ MonoBehaviour:
     MeleeAttacks:
     - Attacks: 1
       GetsParriedBy: 1
-      GetsHitOn: -1
+      GetsHitOn: ffffffff02000000
     - Attacks: 0
       GetsParriedBy: 0
-      GetsHitOn: 2
+      GetsHitOn: 02000000
     - Attacks: -1
       GetsParriedBy: -1
-      GetsHitOn: 1
+      GetsHitOn: 0100000002000000
     - Attacks: 2
       GetsParriedBy: 2
-      GetsHitOn: 1
+      GetsHitOn: 
 --- !u!114 &1934455682
 MonoBehaviour:
   m_ObjectHideFlags: 0

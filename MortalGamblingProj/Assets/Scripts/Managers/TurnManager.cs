@@ -34,20 +34,25 @@ public class TurnManager : MonoBehaviour
     {
         public Outcome GetOutcome(Melee.Target defenderTarget)
         {
-            if(defenderTarget == GetsParriedBy)
+
+            if (defenderTarget == GetsParriedBy)
             {
                 return Outcome.Parry;
             }
-            else if(defenderTarget == GetsHitOn)
+            else 
             {
-                return Outcome.Hit;
+                foreach(Melee.Target target in GetsHitOn)
+                {
+                    if (defenderTarget == target) return Outcome.Hit;
+                }
             }
+
             return Outcome.Defend;
         }
 
         public Melee.Target Attacks;
         public Melee.Target GetsParriedBy;
-        public Melee.Target GetsHitOn;
+        public List<Melee.Target> GetsHitOn;
     }
 
     [SerializeField] private MeleeResolver _resolver;
@@ -160,13 +165,7 @@ public class TurnManager : MonoBehaviour
         Melee.Target defenderTarget = ((Melee)_defenderActions[0].Action).MeleeTarget;
 
         Outcome outcome;
-        if (defenderTarget == Melee.Target.NONE)
-        {
-            outcome = Outcome.Hit;
-            _phaseManager._hasToSwapPhase = true;
-        }
-        else outcome = _resolver.GetOutcome(attackerTarget, defenderTarget);
-    
+        outcome = _resolver.GetOutcome(attackerTarget, defenderTarget);
         DoApplyTurnOutcome(outcome, _attackerActions[0], _defenderActions[0]);
     }
 
