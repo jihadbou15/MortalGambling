@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using System;
 
 public class Player : MonoBehaviour
 {
@@ -30,6 +31,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float _maxStamina = 100;
     [SerializeField] private UIBarSmoothing _UIHealth = null;
     [SerializeField] private UIBarSmoothing _UIStamina = null;
+    [SerializeField] private UINumber _UIHealthNumber = null;
+    [SerializeField] private UINumber _UIStaminaNumber = null;
     [SerializeField] private float _staminaRechargePercent = 0.0f;
     [SerializeField] private SwapPhase _CurrentPhase = null;
 
@@ -66,6 +69,8 @@ public class Player : MonoBehaviour
     {
         _UIHealth.Initialize(1.0f);
         _UIStamina.Initialize(1.0f);
+        _UIHealthNumber.Initialize(_health);
+        _UIStaminaNumber.Initialize(_stamina);
         for (int i = 0; i < _meleeAmount; i++)
         {
             CreateMelee((Melee.Target)(i - 1), _meleeSprites[i], (i - 1) * _meleeOffset);
@@ -180,6 +185,7 @@ public class Player : MonoBehaviour
             OnPlayerHealthEmpty?.Invoke();
         }
         _UIHealth.OnValueChange(_health / _maxHealth);
+        _UIHealthNumber.OnValueChange(_health);
     }
 
     public void DoStaminaChange(float staminaChange)
@@ -196,6 +202,21 @@ public class Player : MonoBehaviour
             OnPlayerStaminaEmpty?.Invoke();
         }
         _UIStamina.OnValueChange(_stamina / _maxStamina);
+        _UIStaminaNumber.OnValueChange(_stamina);
+    }
+
+    private void SetHealth(float newHealth)
+    {
+        _health = newHealth;
+        _UIHealth.OnValueChange(_health / _maxHealth);
+        _UIHealthNumber.OnValueChange(_health);
+    }
+
+    private void SetStamina(float newStamina)
+    {
+        _stamina = _maxStamina;
+        _UIStamina.OnValueChange(_stamina / _maxStamina);
+        _UIStaminaNumber.OnValueChange(_stamina);
     }
 
     public void DoApplyDebuff (Debuff debuffToApply)
@@ -218,7 +239,9 @@ public class Player : MonoBehaviour
 
     public void RechargeStamina()
     {
-        DoStaminaChange(_staminaRechargePercent * 0.01f * _maxStamina);
+        float staminaChange = (_staminaRechargePercent * 0.01f) * (_maxStamina - _stamina);
+        Debug.Log(staminaChange);
+        DoStaminaChange(staminaChange);
     }
 
     public void EnableCardInput(bool isEnabled)
@@ -243,11 +266,8 @@ public class Player : MonoBehaviour
     public void Reset()
     {
         EnableCardInput(true);
-
-        _health = _maxHealth;
-        _stamina = _maxStamina;
-        _UIHealth.OnValueChange(_health / _maxHealth);
-        _UIStamina.OnValueChange(_stamina / _maxStamina);
+        SetHealth(_maxHealth);
+        SetStamina(_maxStamina);
         _debuff = Debuff.NONE;
     }
 
