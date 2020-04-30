@@ -61,6 +61,9 @@ public class Player : MonoBehaviour
     [SerializeField] private ItemMenu _itemMenu = null;
 
 
+    //AI variables
+    private BasicAI AI;
+
     private List<Melee> _meleeActions = new List<Melee>();
     private List<Item> _itemActions = new List<Item>();
 
@@ -84,6 +87,8 @@ public class Player : MonoBehaviour
         _itemMenu.Initialize(_itemActions);
         Reset();
         _id = index;
+        AI = gameObject.GetComponent<BasicAI>();
+        if(AI) AI.Initialize(_meleeActions);
     }
 
     private void CreateMelee(Melee.Target meleeTarget, Sprite meleeSprite, float offset)
@@ -155,6 +160,8 @@ public class Player : MonoBehaviour
         {
             item.Tick();
         }
+
+        if(AI) AI.ChooseAction();
     }
 
     private void OnCardChosen(Action action)
@@ -240,7 +247,6 @@ public class Player : MonoBehaviour
     public void RechargeStamina()
     {
         float staminaChange = (_staminaRechargePercent * 0.01f) * (_maxStamina - _stamina);
-        Debug.Log(staminaChange);
         DoStaminaChange(staminaChange);
     }
 
@@ -260,7 +266,11 @@ public class Player : MonoBehaviour
             else if (item.ItemAmount <= 0) item.SetRegisteringInput(false);
             else item.SetRegisteringInput(isEnabled);
         }
-        
+
+        if(AI)
+        {
+            AI.SetAI(isEnabled);
+        }
     }
 
     public void Reset()

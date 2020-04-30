@@ -38,8 +38,10 @@ public class TeamManager : MonoBehaviour
         GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
         for(int i = 0; i < _teamAmount; ++i)
         {
+            bool isAi = true;
+            if (i == 0) isAi = false;
             Team newTeam = GameObject.Instantiate(_teamPrefab);
-            newTeam.Initialize(i);
+            newTeam.Initialize(i, isAi);
 
             newTeam.OnCardActivate += DoCardActivate;
             newTeam.OnTeamPlayerStaminaEmpty += DoTeamPlayerStaminaEmpty;
