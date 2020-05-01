@@ -5,6 +5,17 @@ using UnityEngine;
 
 public class TurnManager : MonoBehaviour
 {
+
+    private enum TurnStage
+    {
+        Setup,
+        ChooseAction,
+        AddToResolver,
+        SwapInput,
+        TurnResolve,
+        TurnEnd
+    }
+
     public enum Outcome
     {
         Parry,

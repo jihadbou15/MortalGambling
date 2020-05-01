@@ -11,6 +11,14 @@ public class PhaseManager : MonoBehaviour
     private TurnManager _turnManager;
     public bool _hasToSwapPhase;
 
+
+    public enum PhaseStage
+    {
+        Setup,
+        InPhase,
+        PhaseEnd
+    }
+
     public void Initialize(int teamAmount, TurnManager turnManager,TeamManager teamManager)
     {
         _teamAmount = teamAmount;
