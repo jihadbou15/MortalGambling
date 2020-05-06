@@ -38,7 +38,6 @@ public class PhaseManager : MonoBehaviour
 
     public void PhaseSetup()
     {
-
         if (_hasToSwapPhase) SwapPhase();
         int attackingTeamId = GetAttackingTeamIdx();
         _teamManager.CheckTeamDebuffs();

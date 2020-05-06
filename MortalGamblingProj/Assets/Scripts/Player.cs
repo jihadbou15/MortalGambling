@@ -87,8 +87,8 @@ public class Player : MonoBehaviour
         _itemMenu.Initialize(_itemActions);
         Reset();
         _id = index;
-        //AI = gameObject.GetComponent<BasicAI>();
-        //if(AI) AI.Initialize(_meleeActions);
+        AI = gameObject.GetComponent<BasicAI>();
+        if(AI) AI.Initialize(_meleeActions);
     }
 
     private void CreateMelee(Melee.Target meleeTarget, Sprite meleeSprite, float offset)
@@ -161,7 +161,7 @@ public class Player : MonoBehaviour
             item.Tick();
         }
 
-        //if(AI) AI.ChooseAction();
+        if(AI) AI.ChooseAction();
     }
 
     private void OnCardChosen(Action action)
@@ -252,7 +252,6 @@ public class Player : MonoBehaviour
 
     public void EnableCardInput(bool isEnabled)
     {
-        //CheckDebuff();
         foreach (Melee melee in _meleeActions)
         {
             if (IsMeleeDebuffed(melee,_debuff) || (_stamina <= 0.0f && melee.StaminaCost > 0.0f) ) melee.SetRegisteringInput(false);
@@ -280,7 +279,6 @@ public class Player : MonoBehaviour
         SetStamina(_maxStamina);
         _debuff = Debuff.NONE;
     }
-
 
     private bool IsMeleeDebuffed(Melee melee, Debuff currentDebuff)
     {
