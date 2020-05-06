@@ -9,14 +9,13 @@ public class PhaseManager : MonoBehaviour
 
     private TeamManager _teamManager;
     private TurnManager _turnManager;
-    public bool _hasToSwapPhase;
+    private bool _hasToSwapPhase;
 
 
     public enum PhaseStage
     {
         Setup,
-        InPhase,
-        PhaseEnd
+        InPhase
     }
 
     public void Initialize(int teamAmount, TurnManager turnManager,TeamManager teamManager)
@@ -39,44 +38,44 @@ public class PhaseManager : MonoBehaviour
 
     public void PhaseSetup()
     {
+
+        if (_hasToSwapPhase) SwapPhase();
         int attackingTeamId = GetAttackingTeamIdx();
         _teamManager.CheckTeamDebuffs();
 
         for (int i = 0; i < _teamManager.GetTeamAmount(); ++i)
         {
-            bool enable = false;
             if (i == attackingTeamId)
             {
-                enable = true;
                 _teamManager._enabledTeamID = i;
                 _teamManager.SetPhaseFeedback(true, i);
             }
             else _teamManager.SetPhaseFeedback(false, i);
-
-            _teamManager.EnableTeamCardInput(enable, i);
-
         }
 
         _turnManager.SetActionAmount(_teamManager.GetPlayerAmount(attackingTeamId));
+
+        _turnManager.ResetTurns();
+        _turnManager.DoTurnStart();
+
     }
 
-    public void SwapPhase()
+    public void EnablePhaseSwapForNextSetup()
     {
-        _turnManager.ResetTurns();
+        _hasToSwapPhase = true;
+    }
 
+    private void SwapPhase()
+    {
         ++_attackTeamIdx;
         if(_attackTeamIdx >= _teamAmount)
         {
             _attackTeamIdx = 0;
         }
-        DoPhaseEnd();
+        _teamManager.RechargeEveryoneStamina();
 
         _hasToSwapPhase = false;
     }
 
-    public void DoPhaseEnd()
-    {
-        _teamManager.RechargeEveryoneStamina();
-        PhaseSetup();
-    }
+
 }

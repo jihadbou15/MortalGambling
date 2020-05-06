@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class TeamManager : MonoBehaviour
@@ -101,7 +100,7 @@ public class TeamManager : MonoBehaviour
     {
         if (_phaseManager.GetAttackingTeamIdx() == id)
         {
-            _phaseManager._hasToSwapPhase = true;
+            _phaseManager.EnablePhaseSwapForNextSetup();
         }
     }
 
@@ -110,9 +109,13 @@ public class TeamManager : MonoBehaviour
         OnHealthEmpty?.Invoke(id);
     }
 
-    public void EnableTeamCardInput(bool isEnabled, int idx)
+    public void EnableTeamCardInput(int idx)
     {
-        _teams[idx].EnableTeamCardInput(isEnabled);
+        foreach(Team team in _teams)
+        {
+            team.EnableTeamCardInput(false);
+        }
+        _teams[idx].EnableTeamCardInput(true);
     }
 
     public void CheckTeamDebuffs()

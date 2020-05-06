@@ -123,7 +123,7 @@ public class TurnManager : MonoBehaviour
                 _isAttacking = false;
                 _actionCounter = 0;
                 _teamCounter++;
-                DoTurnEnd();
+                DoTurnStart();
             }
         }
         else
@@ -136,7 +136,7 @@ public class TurnManager : MonoBehaviour
                 _teamCounter++;
                 if(_teamCounter < _teamAmount)
                 {
-                    DoTurnEnd();
+                    DoTurnStart();
                 }
             }
         }
@@ -144,7 +144,6 @@ public class TurnManager : MonoBehaviour
         if(_teamCounter >= _teamAmount)
         {
             ResolveTeams();
-            ResetTurns();
         }
     }
 
@@ -174,9 +173,8 @@ public class TurnManager : MonoBehaviour
     {
         Melee.Target attackerTarget = ((Melee)_attackerActions[0].Action).MeleeTarget;
         Melee.Target defenderTarget = ((Melee)_defenderActions[0].Action).MeleeTarget;
-
-        Outcome outcome;
-        outcome = _resolver.GetOutcome(attackerTarget, defenderTarget);
+        
+        Outcome outcome = _resolver.GetOutcome(attackerTarget, defenderTarget);
         DoApplyTurnOutcome(outcome, _attackerActions[0], _defenderActions[0]);
     }
 
@@ -189,7 +187,7 @@ public class TurnManager : MonoBehaviour
                 {
                     Melee attackerMeleeAction = (Melee)attackerAction.Action;
                     _teamManager.ApplyTeamStaminaChange(attackerAction.TeamID, attackerAction.PlayerID, -(int)attackerMeleeAction.StaminaCost);
-                    _phaseManager.SwapPhase();
+                    _phaseManager.EnablePhaseSwapForNextSetup();
                     break;
                 }
             case Outcome.Defend:
@@ -198,7 +196,6 @@ public class TurnManager : MonoBehaviour
                     Melee defenderMeleeAction = (Melee)defenderAction.Action;
                     _teamManager.ApplyTeamStaminaChange(attackerAction.TeamID, attackerAction.PlayerID, -(int)attackerMeleeAction.StaminaCost);
                     _teamManager.ApplyTeamStaminaChange(defenderAction.TeamID, defenderAction.PlayerID, -(int)(attackerMeleeAction.StaminaCost + defenderMeleeAction.DefensiveStaminaPenalty));
-                    _phaseManager.PhaseSetup();
                     break;
                 }
             case Outcome.Hit:
@@ -206,7 +203,6 @@ public class TurnManager : MonoBehaviour
                     Melee attackerMeleeAction = (Melee)attackerAction.Action;
                     _teamManager.ApplyTeamStaminaChange(attackerAction.TeamID, attackerAction.PlayerID, -(int)attackerMeleeAction.StaminaCost);
                     _teamManager.ApplyTeamHealthChange(defenderAction.TeamID, defenderAction.PlayerID, -(int)attackerMeleeAction.StaminaCost);
-                    _phaseManager.PhaseSetup();
                     break;
                 }
             case Outcome.ItemUse:
@@ -218,8 +214,6 @@ public class TurnManager : MonoBehaviour
                         _teamManager.ApplyTeamStaminaChange(defenderAction.TeamID, defenderAction.PlayerID, defenderItemAction.StaminaEffect);
                         //Process debuff
                         _teamManager.ApplyTeamDebuff(attackerAction.TeamID, attackerAction.PlayerID, defenderItemAction.DebuffEffect);
-
-                        if (attackerAction.Action.Type != Action.ActionType.ITEM) _phaseManager.PhaseSetup();
                     }
 
                     if (attackerAction.Action.Type == Action.ActionType.ITEM)
@@ -229,39 +223,34 @@ public class TurnManager : MonoBehaviour
                         _teamManager.ApplyTeamStaminaChange(attackerAction.TeamID, attackerAction.PlayerID, attackerItemAction.StaminaEffect);
                         //Process debuff
                         _teamManager.ApplyTeamDebuff(defenderAction.TeamID, defenderAction.PlayerID, attackerItemAction.DebuffEffect);
-                        _phaseManager.SwapPhase();
+                        _phaseManager.EnablePhaseSwapForNextSetup();
                     }
                     else
                     {
                         Melee attackerMeleeAction = (Melee)attackerAction.Action;
                         _teamManager.ApplyTeamStaminaChange(attackerAction.TeamID, attackerAction.PlayerID, -(int)attackerMeleeAction.StaminaCost);
                         _teamManager.ApplyTeamHealthChange(defenderAction.TeamID, defenderAction.PlayerID, -(int)attackerMeleeAction.StaminaCost);
-                        _phaseManager.PhaseSetup();
                     }
-
                     break;
                 }
         }
 
-        if (_phaseManager._hasToSwapPhase)
-        {
-            _phaseManager.SwapPhase();
-        }
+        _phaseManager.PhaseSetup();
+
     }
 
-    public void DoTurnEnd()
+    public void DoTurnStart()
     {
         int activeID = _phaseManager.GetAttackingTeamIdx();
         int teamAmount = _teamManager.GetTeamAmount();
 
-        activeID += GetTeamCounter();
+        //WHAT THE FUCK IS THIS SHIT
+        activeID += _teamCounter;
         if (activeID >= teamAmount)
         {
             activeID = 0;
         }
 
-        _teamManager.EnableTeamCardInput(false, _teamManager._enabledTeamID);
-        _teamManager.EnableTeamCardInput(true, activeID);
-        _teamManager._enabledTeamID = activeID;
+        _teamManager.EnableTeamCardInput(activeID);
     }
 }

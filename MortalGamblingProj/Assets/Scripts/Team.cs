@@ -26,7 +26,7 @@ public class Team : MonoBehaviour
         for (int i = 0; i < _playerAmount; i++)
         {
             Player newPlayer = GameObject.Instantiate(_playerPrefab);
-            if (isAi) newPlayer.gameObject.AddComponent(typeof(BasicAI));
+            //if (isAi) newPlayer.gameObject.AddComponent(typeof(BasicAI));
             newPlayer.Initialize(i);
             newPlayer.OnActivate += DoCardActivate;
             newPlayer.OnPlayerHealthEmpty += OnPlayerHealthEmpty;

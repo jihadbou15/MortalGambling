@@ -87,8 +87,8 @@ public class Player : MonoBehaviour
         _itemMenu.Initialize(_itemActions);
         Reset();
         _id = index;
-        AI = gameObject.GetComponent<BasicAI>();
-        if(AI) AI.Initialize(_meleeActions);
+        //AI = gameObject.GetComponent<BasicAI>();
+        //if(AI) AI.Initialize(_meleeActions);
     }
 
     private void CreateMelee(Melee.Target meleeTarget, Sprite meleeSprite, float offset)
@@ -161,7 +161,7 @@ public class Player : MonoBehaviour
             item.Tick();
         }
 
-        if(AI) AI.ChooseAction();
+        //if(AI) AI.ChooseAction();
     }
 
     private void OnCardChosen(Action action)
