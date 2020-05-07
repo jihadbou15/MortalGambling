@@ -266,10 +266,7 @@ public class Player : MonoBehaviour
             else item.SetRegisteringInput(isEnabled);
         }
 
-        if(AI)
-        {
-            AI.SetAI(isEnabled);
-        }
+        if (AI) AI.SetAI(isEnabled);
     }
 
     public void Reset()

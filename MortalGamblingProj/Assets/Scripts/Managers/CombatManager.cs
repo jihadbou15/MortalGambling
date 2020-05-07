@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StageMAnager : MonoBehaviour
+public class CombatManager : MonoBehaviour
 {
     private TurnManager turnManager;
     private PhaseManager phaseManager;
 
     public enum PhaseStage
     {
-        Setup,
-        InPhase,
-        SwapPhase
+        Setup, //
+        InPhase, //
+        SwapPhase, // only on swap
     }
 
     private enum TurnStage
@@ -19,8 +19,7 @@ public class StageMAnager : MonoBehaviour
         Setup,
         ChooseAction,
         AddToResolver,
-        SwapInput,
-        TurnResolve,
+        SwapInput, TurnResolve,
         TurnEnd
     }
 
@@ -28,9 +27,6 @@ public class StageMAnager : MonoBehaviour
     {
         
     }
-
-
-
     public void Tick()
     {
         

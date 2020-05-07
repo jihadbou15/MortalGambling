@@ -6,16 +6,6 @@ using UnityEngine;
 public class TurnManager : MonoBehaviour
 {
 
-    private enum TurnStage
-    {
-        Setup,
-        ChooseAction,
-        AddToResolver,
-        SwapInput,
-        TurnResolve,
-        TurnEnd
-    }
-
     public enum Outcome
     {
         Parry,
@@ -160,7 +150,7 @@ public class TurnManager : MonoBehaviour
         else if (attackerType == Action.ActionType.MAGIC &&
                 defenderType == Action.ActionType.MAGIC)
         {
-
+            //Add potential magic system
         }
         else if(attackerType == Action.ActionType.ITEM ||
             defenderType == Action.ActionType.ITEM)
