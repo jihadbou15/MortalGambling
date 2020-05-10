@@ -4,8 +4,13 @@ using UnityEngine;
 
 public class CombatManager : MonoBehaviour
 {
-    private TurnManager turnManager;
-    private PhaseManager phaseManager;
+    private TurnManager _turnManager;
+    private PhaseManager _phaseManager;
+
+    PhaseStage _phaseStage;
+    TurnStage _turnStage;
+
+    List<StageExecutions> stages;
 
     public enum PhaseStage
     {
@@ -25,10 +30,27 @@ public class CombatManager : MonoBehaviour
 
     public void Initialize(TurnManager turnManager,PhaseManager phaseManager)
     {
-        
+        _turnManager = turnManager;
+        _phaseManager = phaseManager;
     }
+
+    public void StartCombat()
+    {
+        _phaseStage = PhaseStage.Setup;
+    }
+
+    private void InCombat()
+    {
+
+    }
+
     public void Tick()
     {
         
+    }
+
+    private void RunStage()
+    {
+
     }
 }
